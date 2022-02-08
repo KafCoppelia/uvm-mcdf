@@ -9,9 +9,8 @@
 
 #### 安装教程
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1.  开发环境搭建参考：[UVM学习之路（1）— CentOS 7虚拟机下安装VCS开发环境](https://blog.csdn.net/qq_38113006/article/details/120803926?spm=1001.2014.3001.5501)
+2.  开发工具使用参考：[UVM学习之路（2）— 使用VCS+Verdi进行仿真调试](https://blog.csdn.net/qq_38113006/article/details/120921003)
 
 #### 使用说明
 

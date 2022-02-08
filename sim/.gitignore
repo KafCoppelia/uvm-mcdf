@@ -1,0 +1,7 @@
+*
+!.gitignore
+!Makefile
+!rtl.list
+!uvm.list
+!sim.py
+!signal.rc

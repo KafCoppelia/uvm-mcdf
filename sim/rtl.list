@@ -1,0 +1,6 @@
+../dut/slave_fifo.v
+../dut/arbiter.v
+../dut/formater.v
+../dut/reg.v
+../dut/mcdf.v
+../testbench/tb_top.sv
