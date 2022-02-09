@@ -40,25 +40,6 @@ module tb_top;
         .fmt_end_o   (fmt_if.fmt_end     )  
     );
 
-    // clock generation
-    initial begin 
-        clk <= 0;
-        forever begin
-            #5 clk <= !clk;
-        end
-    end
-      
-    // reset trigger
-    initial begin 
-        #10 rstn <= 0;
-        repeat(10) @(posedge clk);
-        rstn <= 1;
-    end
-
-    initial begin
-        // run_test();
-    end
-
     initial begin
         // set the format for time display
         $timeformat(-9, 2, "ns", 10);      
@@ -74,10 +55,30 @@ module tb_top;
         $finish(2);
     end
 
+    initial begin
+        run_test();
+    end
+    
+	// clock generation
+    initial begin 
+        clk <= 1'b0;
+        forever begin
+            #5 clk <= !clk;
+        end
+    end
+      
+    // reset trigger
+    initial begin 
+        #10 rstn <= 1'b0;
+        repeat(10) @(posedge clk);
+        rstn <= 1'b1;
+    end
+
+
 `ifdef DUMP_FSDB
     initial begin 
         $fsdbDumpfile("tb.fsdb");
-        $fsdbDumpvars;
+        $fsdbDumpvars(2, top_tb, "+all");
     end 
 `endif 
 
