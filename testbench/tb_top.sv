@@ -14,6 +14,8 @@ module tb_top;
     interface_channel chnl2_if(.*);
     interface_bus  reg_if(.*);
     interface_formater fmt_if(.*);
+    interface_mcdf mcdf_if(.*);
+    interface_arbiter  arb_if(.*);
   
     mcdf dut(
         .clk_i       (clk                ),
@@ -50,6 +52,23 @@ module tb_top;
         // uvm_config_db # (virtual interface_bus)::set(null, "uvm_test_top.env.bus_agt.drv", "vif", bus_if);
         // uvm_config_db # (virtual interface_bus)::set(null, "uvm_test_top.env.bus_agt.mon", "vif", bus_if);
         // uvm_config_db # (virtual interface_backdoor)::set(null, "uvm_test_top", "vif", bk_if);
+        uvm_config_db#(virtual interface_channel)::set(uvm_root::get(), "uvm_test_top.env.chnl_agts[0].drv", "vif", chnl0_if);
+        uvm_config_db#(virtual interface_channel)::set(uvm_root::get(), "uvm_test_top.env.chnl_agts[1].drv", "vif", chnl1_if);
+        uvm_config_db#(virtual interface_channel)::set(uvm_root::get(), "uvm_test_top.env.chnl_agts[2].drv", "vif", chnl2_if);
+        uvm_config_db#(virtual interface_channel)::set(uvm_root::get(), "uvm_test_top.env.chnl_agts[0].mon", "vif", chnl0_if);
+        uvm_config_db#(virtual interface_channel)::set(uvm_root::get(), "uvm_test_top.env.chnl_agts[1].mon", "vif", chnl1_if);
+        uvm_config_db#(virtual interface_channel)::set(uvm_root::get(), "uvm_test_top.env.chnl_agts[2].mon", "vif", chnl2_if);
+        uvm_config_db#(virtual interface_bus)::set(uvm_root::get(), "uvm_test_top.env.reg_agt.drv", "vif", reg_if);
+        uvm_config_db#(virtual interface_bus)::set(uvm_root::get(), "uvm_test_top.env.reg_agt.mon", "vif", reg_if);
+        uvm_config_db#(virtual interface_formater)::set(uvm_root::get(), "uvm_test_top.env.fmt_agt.drv", "vif", fmt_if);
+        uvm_config_db#(virtual interface_formater)::set(uvm_root::get(), "uvm_test_top.env.fmt_agt.mon", "vif", fmt_if);
+        uvm_config_db#(virtual interface_mcdf)::set(uvm_root::get(), "uvm_test_top.env.mdl", "vif", mcdf_if);
+        uvm_config_db#(virtual interface_mcdf)::set(uvm_root::get(), "uvm_test_top.env.scb", "mcdf_vif", mcdf_if);
+        
+        uvm_config_db#(virtual interface_arbiter)::set(uvm_root::get(), "uvm_test_top.env.scb", "arb_vif", arb_if);
+
+
+        
         #10000;
         $display("Hell world!");
         $finish(2);
@@ -78,7 +97,7 @@ module tb_top;
 `ifdef DUMP_FSDB
     initial begin 
         $fsdbDumpfile("tb.fsdb");
-        $fsdbDumpvars(2, top_tb, "+all");
+        $fsdbDumpvars(2, tb_top, "+all");
     end 
 `endif 
 

@@ -60,6 +60,29 @@ interface interface_formater(input clk, input rstn);
     endclocking
 endinterface
 
+interface interface_arbiter(input clk, input rstn);
+    logic [1:0] slv_prios[3];
+    logic slv_reqs[3];
+    logic a2s_acks[3];
+    logic f2a_id_req;
+    clocking mon_ck @(posedge clk);
+      default input #1ns output #1ns;
+      input slv_prios, slv_reqs, a2s_acks, f2a_id_req;
+    endclocking
+  endinterface
+
+interface interface_mcdf(input clk, input rstn);
+    // USER TODO
+    // To define those signals which do not exsit in
+    // reg_if, chnl_if, arb_if or fmt_if
+    logic chnl_en[3];
+  
+    clocking mon_ck @(posedge clk);
+      default input #1ns output #1ns;
+      input chnl_en;
+    endclocking
+endinterface    
+ 
 `endif
 
 

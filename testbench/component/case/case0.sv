@@ -21,14 +21,14 @@ endclass */
 // -- virtual sequence for case0
 class case0_vseq extends uvm_sequence;
 	`uvm_object_utils(case0_vseq)
-    `uvm_declare_p_sequencer(virtual_sequencer)
+    `uvm_declare_p_sequencer(virtual_sqr)
 
 	function new(string name = "case0_vseq");
 		super.new(name);
 	endfunction
 	virtual task body();
-        sequence_chnl chnl_seq;
-        sequence_fmt fmt_seq;
+        sequence_channel chnl_seq;
+        sequence_formater fmt_seq;
 
 		if(starting_phase != null)
 			starting_phase.raise_objection(this);
@@ -93,7 +93,7 @@ endclass
 // -- virtual sequence for case0 register model
 class case0_cfg_vseq extends uvm_sequence;
 	`uvm_object_utils(case0_cfg_vseq)
-    `uvm_declare_p_sequencer(virtual_sequencer)
+    `uvm_declare_p_sequencer(virtual_sqr)
 
 	function new(string name = "case0_cfg_vseq");
 		super.new(name);

@@ -2,9 +2,9 @@
 `define AGENT_FORMATER_SV
 
 class agent_formater extends uvm_agent;
-	driver_fmt drv;
-	monitor_fmt mon;
-	sequencer_fmt sqr;
+	driver_formater drv;
+	monitor_formater mon;
+	sequencer_formater sqr;
 
 	// uvm_analysis_port #(my_transaction) ap;
 
@@ -21,10 +21,10 @@ endclass
 function void agent_formater::build_phase(uvm_phase phase);
 	super.build_phase(phase);
 	if(is_active == UVM_ACTIVE) begin
-		drv = driver_fmt::type_id::create("drv", this);
-		sqr = sequencer_fmt::type_id::create("sqr", this);
+		drv = driver_formater::type_id::create("drv", this);
+		sqr = sequencer_formater::type_id::create("sqr", this);
 	end
-	mon = monitor_fmt::type_id::create("mon", this);
+	mon = monitor_formater::type_id::create("mon", this);
 endfunction
 
 function void agent_formater::connect_phase(uvm_phase phase);

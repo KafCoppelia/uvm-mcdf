@@ -3,11 +3,11 @@
 
 // coverage model for MCDF
 class coverage_mcdf extends uvm_component;
-    local virtual chnl_intf chnl_vifs[3]; 
-    local virtual arb_intf arb_vif; 
-    local virtual mcdf_intf mcdf_vif;
-    local virtual reg_intf reg_vif;
-    local virtual fmt_intf fmt_vif;
+    local virtual interface_channel chnl_vifs[3]; 
+    local virtual interface_arbiter arb_vif; 
+    local virtual interface_mcdf mcdf_vif;
+    local virtual interface_bus reg_vif;
+    local virtual interface_formater fmt_vif;
     local int delay_req_to_grant;
 
     `uvm_component_utils(coverage_mcdf)
@@ -62,12 +62,12 @@ class coverage_mcdf extends uvm_component;
             bins write = {`WRITE};
             bins read  = {`READ};
         }
-        wdata: coverpoint reg_vif.mon_ck.cmd_data_m2s {
+        wdata: coverpoint reg_vif.mon_ck.cmd_data_w {
             type_option.weight = 0;
             bins legal = {[0:'h3F]};
             bins illegal = {['h40:$]};
         }
-        rdata: coverpoint reg_vif.mon_ck.cmd_data_s2m {
+        rdata: coverpoint reg_vif.mon_ck.cmd_data_r {
             type_option.weight = 0;
             bins legal = {[0:'hFF]};
             illegal_bins illegal = default;
@@ -272,11 +272,11 @@ class coverage_mcdf extends uvm_component;
       `uvm_info(get_type_name(), s, UVM_LOW)
     endfunction
 
-    virtual function void set_interface(virtual chnl_intf ch_vifs[3] 
-                                        ,virtual reg_intf reg_vif
-                                        ,virtual arb_intf arb_vif
-                                        ,virtual fmt_intf fmt_vif
-                                        ,virtual mcdf_intf mcdf_vif
+    virtual function void set_interface(virtual interface_channel ch_vifs[3] 
+                                        ,virtual interface_bus reg_vif
+                                        ,virtual interface_arbiter arb_vif
+                                        ,virtual interface_formater fmt_vif
+                                        ,virtual interface_mcdf mcdf_vif
                                       );
       this.chnl_vifs = ch_vifs;
       this.arb_vif = arb_vif;
@@ -294,7 +294,7 @@ class coverage_mcdf extends uvm_component;
       if(mcdf_vif == null)
         $error("mcdf interface handle is NULL, please check if target interface has been intantiated");
     endfunction
-endclass: mcdf_coverage
+endclass: coverage_mcdf
 
 `endif
 

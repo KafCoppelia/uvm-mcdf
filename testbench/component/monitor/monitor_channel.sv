@@ -7,7 +7,7 @@ typedef struct packed{
 }mon_data_t;
 
 class monitor_channel extends uvm_monitor;
-	local virtual interface_chnl vif;
+	local virtual interface_channel vif;
 	
     uvm_blocking_put_port #(mon_data_t) mon_bp_port;
 
@@ -18,8 +18,8 @@ class monitor_channel extends uvm_monitor;
 
 	virtual function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
-		if(!uvm_config_db#(virtual interface_chnl)::get(this, "", "vif", vif))
-			`uvm_fatal("montior_chnl", "virtual interface must be set for vif!!!");
+		if(!uvm_config_db#(virtual interface_channel)::get(this, "", "vif", vif))
+			`uvm_fatal("montior_channel", "virtual interface must be set for vif!!!");
 		mon_bp_port = new("mon_bp_port", this);
 	endfunction
 

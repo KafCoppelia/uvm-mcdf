@@ -1,8 +1,8 @@
 `ifndef DRIVER_BUS_SV
 `define DRIVER_BUS_SV
 
-class driver_bus extends uvm_driver #(transaction_reg);
-	virtual interface_reg vif;
+class driver_bus extends uvm_driver #(transaction_bus);
+	virtual interface_bus vif;
 
 	`uvm_component_utils(driver_bus)
 	function new(string name = "drvier_reg", uvm_component parent = null);
@@ -11,14 +11,14 @@ class driver_bus extends uvm_driver #(transaction_reg);
 
 	virtual function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
-		if(!uvm_config_db#(virtual interface_reg)::get(this, "", "vif", vif))
+		if(!uvm_config_db#(virtual interface_bus)::get(this, "", "vif", vif))
 			`uvm_fatal("driver_bus", "virtual interface must be set for vif!!!");
 	endfunction
 
 	extern virtual task run_phase(uvm_phase phase);
 	extern virtual task do_drive();
 	extern virtual task do_reset();
-	extern virtual task drive_one_pkt(transaction_reg tr);
+	extern virtual task drive_one_pkt(transaction_bus tr);
 endclass
 
 task driver_bus::run_phase(uvm_phase phase);
@@ -31,12 +31,12 @@ endtask
 task driver_bus::do_reset();
     vif.cmd_addr <= 0;
     vif.cmd <= `IDLE;
-    vif.cmd_data_m2s <= 0;
+    vif.cmd_data_w <= 0;
     forever begin
         @(negedge vif.rstn);
         vif.cmd_addr <= 0;
         vif.cmd <= `IDLE;
-        vif.cmd_data_m2s <= 0;
+        vif.cmd_data_w <= 0;
 	end
 endtask
    
@@ -52,7 +52,7 @@ task driver_bus::do_drive();
 	end
 endtask
 
-task driver_bus::drive_one_pkt(transaction_reg tr);
+task driver_bus::drive_one_pkt(transaction_bus tr);
 	// `uvm_info("driver_bus", "begin to driver one pkt ", UVM_LOW);
 	@(posedge vif.clk iff (vif.rstn == 1'b1));
     
@@ -60,19 +60,19 @@ task driver_bus::drive_one_pkt(transaction_reg tr);
         `WRITE: begin
             vif.drv_ck.cmd_addr <= tr.addr;
             vif.drv_ck.cmd <= tr.cmd;
-            vif.drv_ck.cmd_data_m2s <= tr.data;
+            vif.drv_ck.cmd_data_w <= tr.data;
         end
         `READ: begin
             vif.drv_ck.cmd_addr <= tr.addr;
             vif.drv_ck.cmd <= tr.cmd;
             repeat(2) @(negedge vif.clk)
-            tr.data = vif.cmd_data_s2m;
+            tr.data = vif.cmd_data_r;
         end
         `IDLE: begin
             @(posedge vif.clk);
             vif.drv_ck.cmd_addr <= 0;
             vif.drv_ck.cmd <= `IDLE;
-            vif.drv_ck.cmd_data_m2s <= 0;
+            vif.drv_ck.cmd_data_w <= 0;
         end
         default: $error("command %b is illegal", tr.cmd);
     endcase

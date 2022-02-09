@@ -2,9 +2,9 @@
 `define MONITOR_FORMATER_SV
 
 class monitor_formater extends uvm_monitor;
-	virtual interface_fmt vif;
+	virtual interface_formater vif;
 	
-	uvm_blocking_put_port #(transaction_fmt) mon_bp_port;
+	uvm_blocking_put_port #(transaction_formater) mon_bp_port;
 
 	`uvm_component_utils(monitor_formater)
 	function new(string name = "monitor_formater", uvm_component parent = null);
@@ -13,18 +13,18 @@ class monitor_formater extends uvm_monitor;
 
 	virtual function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
-		if(!uvm_config_db#(virtual interface_fmt)::get(this, "", "vif", vif))
-			`uvm_fatal("montior_fmt", "virtual interface must be set for vif!!!");
+		if(!uvm_config_db#(virtual interface_formater)::get(this, "", "vif", vif))
+			`uvm_fatal("montior_formater", "virtual interface must be set for vif!!!");
 		mon_bp_port = new("mon_bp_port", this);
 	endfunction
 
 	extern task run_phase(uvm_phase phase);
-	extern task collect_one_pkt(transaction_fmt tr);
+	extern task collect_one_pkt(transaction_formater tr);
 
 endclass
 
 task monitor_formater::run_phase(uvm_phase phase);
-	transaction_fmt tr;
+	transaction_formater tr;
 	while(1) begin
 		tr = new("tr");
 		collect_one_pkt(tr);
@@ -32,7 +32,7 @@ task monitor_formater::run_phase(uvm_phase phase);
 	end
 endtask
 
-task monitor_formater::collect_one_pkt(transaction_fmt tr);
+task monitor_formater::collect_one_pkt(transaction_formater tr);
     string s;
 	@(posedge vif.mon_ck.fmt_start);
     tr.length = vif.mon_ck.fmt_length;

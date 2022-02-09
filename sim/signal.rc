@@ -1,0 +1,96 @@
+Magic 271485
+Revision Verdi_O-2018.09-SP2
+
+; Window Layout <x> <y> <width> <height> <signalwidth> <valuewidth>
+viewPort 0 27 2358 1040 214 65
+
+; File list:
+; openDirFile [-d delimiter] [-s time_offset] [-rf auto_bus_rule_file] path_name file_name
+openDirFile -d / "" "/home/william/project/uvm/uvm-mcdf/sim/tb.fsdb"
+
+; file time scale:
+; fileTimeScale ### s|ms|us|ns|ps
+
+; signal spacing:
+signalSpacing 5
+
+; windowTimeUnit is used for zoom, cursor & marker
+; waveform viewport range
+zoom 0.000000 10100000.000000
+cursor 0.000000
+marker 0.000000
+
+; user define markers
+; userMarker time_pos marker_name color linestyle
+; visible top row signal index
+top 0
+; marker line index
+markerPos 24
+
+; event list
+; addEvent event_name event_expression
+; curEvent event_name
+
+
+
+COMPLEX_EVENT_BEGIN
+
+
+COMPLEX_EVENT_END
+
+
+
+; toolbar current search type
+; curSTATUS search_type
+curSTATUS ByChange
+
+
+addGroup "base"
+activeDirFile "" "/home/william/project/uvm/uvm-mcdf/sim/tb.fsdb"
+addSignal -h 15 /tb_top/dut/rstn_i
+addSignal -h 15 -holdScope clk_i
+addGroup "channel0"
+addSignal -h 15 /tb_top/dut/ch0_ready_o
+addSignal -h 15 -holdScope ch0_data_i[31:0]
+addSignal -h 15 -holdScope ch0_vld_i
+addGroup "channel1"
+addSignal -h 15 /tb_top/dut/ch1_ready_o
+addSignal -h 15 -holdScope ch1_data_i[31:0]
+addSignal -h 15 -holdScope ch1_vld_i
+addGroup "channel2"
+addSignal -h 15 /tb_top/dut/ch2_ready_o
+addSignal -h 15 -holdScope ch2_data_i[31:0]
+addSignal -h 15 -holdScope ch2_vld_i
+addGroup "formater"
+addSignal -h 15 /tb_top/dut/fmt_chid_o[1:0]
+addSignal -h 15 -holdScope fmt_data_o[31:0]
+addSignal -h 15 -holdScope fmt_end_o
+addSignal -h 15 -holdScope fmt_grant_i
+addSignal -h 15 -holdScope fmt_length_o[5:0]
+addSignal -h 15 -holdScope fmt_req_o
+addSignal -h 15 -holdScope fmt_start_o
+addGroup "register"
+addSignal -h 15 /tb_top/dut/cmd_i[1:0]
+addSignal -h 15 -holdScope cmd_addr_i[7:0]
+addSignal -h 15 -holdScope cmd_data_i[31:0]
+addSignal -h 15 -holdScope cmd_data_o[31:0]
+addGroup "G7"
+
+; getSignalForm Scope Hierarchy Status
+; active file of getSignalForm
+activeDirFile "" "/home/william/project/uvm/uvm-mcdf/sim/tb.fsdb"
+
+GETSIGNALFORM_SCOPE_HIERARCHY_BEGIN
+getSignalForm close
+
+"/tb_top"
+"/tb_top/dut"
+
+SCOPE_LIST_BEGIN
+"/tb_top"
+"/tb_top/dut"
+SCOPE_LIST_END
+
+GETSIGNALFORM_SCOPE_HIERARCHY_END
+
+

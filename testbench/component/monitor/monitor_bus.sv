@@ -4,7 +4,8 @@
 class monitor_bus extends uvm_monitor;
 	virtual interface_bus vif;
 	
-	uvm_analysis_port #(transaction_bus) ap;
+    uvm_blocking_put_port #(transaction_bus) mon_bp_port;
+    uvm_analysis_port #(transaction_bus) mon_ana_port;
 
 	`uvm_component_utils(monitor_bus)
 	function new(string name = "monitor_bus", uvm_component parent = null);
@@ -15,7 +16,8 @@ class monitor_bus extends uvm_monitor;
 		super.build_phase(phase);
 		if(!uvm_config_db#(virtual interface_bus)::get(this, "", "vif", vif))
 			`uvm_fatal("montior_bus", "virtual interface must be set for vif!!!");
-		ap = new("ap", this);
+		mon_bp_port = new("mon_bp_port", this);
+		mon_ana_port = new("mon_ana_port", this);
 	endfunction
 
 	extern task main_phase(uvm_phase phase);
@@ -28,24 +30,25 @@ task monitor_bus::main_phase(uvm_phase phase);
 	while(1) begin
 		tr = new("tr");
 		collect_one_pkt(tr);
-		ap.write(tr);
+		mon_bp_port.put(tr);
+		mon_ana_port.write(tr);
 	end
 endtask
 
 task monitor_bus::collect_one_pkt(transaction_bus tr);
 	
-	while(1) begin
-		@(posedge vif.clk);
-		if(vif.bus_cmd_valid) break;
+	@(posedge vif.clk iff (vif.rstn && vif.mon_ck.cmd != `IDLE));
+	tr.addr = vif.mon_ck.cmd_addr;
+	tr.cmd = vif.mon_ck.cmd;
+	if(vif.mon_ck.cmd == `WRITE) begin
+	  tr.data = vif.mon_ck.cmd_data_w;
+	end
+	else if(vif.mon_ck.cmd == `READ) begin
+	  @(posedge vif.clk);
+	  tr.data = vif.mon_ck.cmd_data_r;
 	end
 
-    tr.bus_op = ((vif.bus_op == 0) ? BUS_RD : BUS_WR);
-    tr.addr = vif.bus_addr;
-    tr.wr_data = vif.bus_wr_data;
-	@(posedge vif.clk);
-	tr.rd_data = vif.bus_rd_data;
-	
-	`uvm_info("monitor_bus", $sformatf("end collect one pkt, bus_op : %0d", tr.bus_op), UVM_HIGH);
+	`uvm_info(get_type_name(), $sformatf("monitored addr %2x, cmd %2b, data %8x", tr.addr, tr.cmd, tr.data), UVM_HIGH)
 
 endtask
 

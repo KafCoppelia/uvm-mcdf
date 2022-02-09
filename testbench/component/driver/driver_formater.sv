@@ -1,8 +1,8 @@
 `ifndef DRIVER_FORMATER_SV
 `define DRIVER_FORMATER_SV
 
-class driver_formater extends uvm_driver #(transaction_fmt);
-	local virtual interface_fmt vif;
+class driver_formater extends uvm_driver #(transaction_formater);
+	local virtual interface_formater vif;
     local mailbox #(bit[31:0]) fifo;
     local int fifo_bound;
     local int data_consum_peroid;
@@ -19,7 +19,7 @@ class driver_formater extends uvm_driver #(transaction_fmt);
 		super.build_phase(phase);
 		// `uvm_info("my_driver", "build_phase is called", UVM_LOW);
 
-		if(!uvm_config_db#(virtual interface_fmt)::get(this, "", "vif", vif))
+		if(!uvm_config_db#(virtual interface_formater)::get(this, "", "vif", vif))
 			`uvm_fatal("driver_formater", "virtual interface must be set for vif!!!");
 
 	endfunction
@@ -29,7 +29,7 @@ class driver_formater extends uvm_driver #(transaction_fmt);
 	extern virtual task do_consume();
 	extern virtual task do_config();
 	extern virtual task do_reset();
-	// extern virtual task drive_one_pkt(transaction_fmt tr);
+	// extern virtual task drive_one_pkt(transaction_formater tr);
 endclass
 
 task driver_formater::run_phase(uvm_phase phase);
@@ -42,7 +42,7 @@ task driver_formater::run_phase(uvm_phase phase);
 endtask
 
 task driver_formater::do_config();
-    // transaction_fmt req, rsp;
+    // transaction_formater req, rsp;
     forever begin
 		seq_item_port.get_next_item(req);
         case(req.fifo)

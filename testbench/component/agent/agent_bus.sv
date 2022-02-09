@@ -2,9 +2,9 @@
 `define AGENT_BUS_SV
 
 class agent_bus extends uvm_agent;
-	driver_reg drv;
-	monitor_reg mon;
-	sequencer_reg sqr;
+	driver_bus drv;
+	monitor_bus mon;
+	sequencer_bus sqr;
 
 	// uvm_analysis_port #(transaction_bus) ap;
 
@@ -21,10 +21,10 @@ endclass
 function void agent_bus::build_phase(uvm_phase phase);
 	super.build_phase(phase);
 	if(is_active == UVM_ACTIVE) begin
-		drv = driver_reg::type_id::create("drv", this);
-		sqr = sequencer_reg::type_id::create("sqr", this);
+		drv = driver_bus::type_id::create("drv", this);
+		sqr = sequencer_bus::type_id::create("sqr", this);
 	end
-	mon = monitor_reg::type_id::create("mon", this);
+	mon = monitor_bus::type_id::create("mon", this);
 endfunction
 
 function void agent_bus::connect_phase(uvm_phase phase);

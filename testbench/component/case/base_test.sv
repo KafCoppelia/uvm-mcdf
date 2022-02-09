@@ -3,7 +3,7 @@
 
 class base_test extends uvm_test;
 	env_mcdf env;
-    virtual_sequencer v_sqr;
+    virtual_sqr v_sqr;
     // reg_model rm;
     // adapter reg_sqr_adapter;
 
@@ -22,7 +22,7 @@ endclass
 function void base_test::build_phase(uvm_phase phase);
 	super.build_phase(phase);
 	env = env_mcdf::type_id::create("env", this);
-    v_sqr = virtual_sequencer::type_id::create("v_sqr", this);
+    v_sqr = virtual_sqr::type_id::create("v_sqr", this);
 /*    rm = reg_model::type_id::create("rm", this);
     rm.configure(null, "");
     rm.build();

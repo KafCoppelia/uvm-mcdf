@@ -3,14 +3,14 @@
 
 // top environment for MCDF
 class env_mcdf extends uvm_env;
-	agent_chnl chnl_agts[3];
-	agent_reg reg_agt;
-    agent_fmt fmt_agt;
+	agent_channel chnl_agts[3];
+	agent_bus reg_agt;
+    agent_formater fmt_agt;
 	model_mcdf mdl;
 	scoreboard_mcdf scb;
     reg_model rm;
     adapter adapter;
-    uvm_reg_predictor #(transaction_reg) predictor;
+    uvm_reg_predictor #(transaction_bus) predictor;
 
     // coverage_mcdf cvrg;
 
@@ -22,12 +22,12 @@ class env_mcdf extends uvm_env;
 	virtual function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
         foreach(chnl_agts[i]) begin
-            chnl_agts[i] = agent_chnl::type_id::create($sformatf("chnl_agts[%0d]", i), this);
+            chnl_agts[i] = agent_channel::type_id::create($sformatf("chnl_agts[%0d]", i), this);
 		    chnl_agts[i].is_active = UVM_ACTIVE;
         end
-		reg_agt = agent_reg::type_id::create("reg_agt", this);
+		reg_agt = agent_bus::type_id::create("reg_agt", this);
 		reg_agt.is_active = UVM_ACTIVE;
-        fmt_agt = agent_fmt::type_id::create("fmt_agt", this);
+        fmt_agt = agent_formater::type_id::create("fmt_agt", this);
         fmt_agt.is_active = UVM_ACTIVE;
 		mdl = model_mcdf::type_id::create("mdl", this);
 		scb = scoreboard_mcdf::type_id::create("scb", this);
@@ -35,7 +35,7 @@ class env_mcdf extends uvm_env;
         // rm = reg_model::type_id::create("rm", this);
         // rm.build();
         // adapter = adapter::type_id::create("adapter", this);
-        // predictor = uvm_reg_predictor#(transaction_reg)::type_id::create("predictor", this);
+        // predictor = uvm_reg_predictor#(transaction_bus)::type_id::create("predictor", this);
              
         // cvrg = coverage_mcdf::type_id::create("cvrg", this);
 	endfunction

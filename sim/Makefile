@@ -14,7 +14,7 @@ PRE_SRC +=
 PRE_ALL += $(PRE_OPT) $(PRE_INC) $(PRE_SRC) 
 
 #--- DUT --- 
-# DUT_SRC += -f ./rtl.list #How to write rtl.list ?
+DUT_SRC += -f ./rtl.list #How to write rtl.list ?
 DUT_INC += +incdir+../dut 
 DUT_ALL += $(DUT_INC) $(DUT_SRC)
 #--- TB_TOP ---
@@ -27,8 +27,8 @@ WRAP_INC +=
 WRAP_SRC += 
 WRAP_ALL += $(WRAP_INC) $(WRAP_SRC) 
 #--- UVM  ---
-UVM_SRC += -f ./uvm.list
-UVM_INC +=
+UVM_SRC += 
+UVM_INC += +incdir+../testbench/component/transaction/
 UVM_OPT += -ntb_opts uvm-1.1
 UVM_ALL += $(UVM_OPT) $(UVM_INC) $(UVM_SRC) 
 #--- POST ---

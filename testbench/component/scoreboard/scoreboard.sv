@@ -1,81 +1,81 @@
-class my_scoreboard extends uvm_scoreboard;
-    transaction_dut  mdl_queue[$];
-    local int compare_cnt = 0;
-    local int success_cnt= 0;
-    local int failure_cnt = 0;
+// class my_scoreboard extends uvm_scoreboard;
+//     transaction_dut  mdl_queue[$];
+//     local int compare_cnt = 0;
+//     local int success_cnt= 0;
+//     local int failure_cnt = 0;
 
-    uvm_blocking_get_port #(transaction_dut)  pack_mdl_in;     // from reference model
-    uvm_blocking_get_port #(transaction_dut)  pack_mon_in;     // from out_agt.monitor
+//     uvm_blocking_get_port #(transaction_dut)  pack_mdl_in;     // from reference model
+//     uvm_blocking_get_port #(transaction_dut)  pack_mon_in;     // from out_agt.monitor
     
-    `uvm_component_utils(my_scoreboard)
-    function new(string name="my_scoreboard", uvm_component parent = null);
-        super.new(name, parent);
-    endfunction 
-    virtual function void build_phase(uvm_phase phase);
-        super.build_phase(phase);
-        pack_mdl_in = new("pack_mdl_in", this);
-        pack_mon_in = new("pack_mon_in", this);
-    endfunction
-    extern virtual task main_phase(uvm_phase phase);
-    virtual function void report_phase(uvm_phase phase);
-        super.report_phase(phase);
-        $display("\n************************************************************************");
-        $display("Compare %0d time(s): %0d success(es), %0d failure(s).", compare_cnt, success_cnt, failure_cnt);
-        $display("************************************************************************");
-    endfunction
-endclass 
+//     `uvm_component_utils(my_scoreboard)
+//     function new(string name="my_scoreboard", uvm_component parent = null);
+//         super.new(name, parent);
+//     endfunction 
+//     virtual function void build_phase(uvm_phase phase);
+//         super.build_phase(phase);
+//         pack_mdl_in = new("pack_mdl_in", this);
+//         pack_mon_in = new("pack_mon_in", this);
+//     endfunction
+//     extern virtual task main_phase(uvm_phase phase);
+//     virtual function void report_phase(uvm_phase phase);
+//         super.report_phase(phase);
+//         $display("\n************************************************************************");
+//         $display("Compare %0d time(s): %0d success(es), %0d failure(s).", compare_cnt, success_cnt, failure_cnt);
+//         $display("************************************************************************");
+//     endfunction
+// endclass 
  
-task my_scoreboard::main_phase(uvm_phase phase);
-    transaction_dut mdl_temp, mdl_cmp, mon_cmp; 
-    bit result;
-    super.main_phase(phase);
+// task my_scoreboard::main_phase(uvm_phase phase);
+//     transaction_dut mdl_temp, mdl_cmp, mon_cmp; 
+//     bit result;
+//     super.main_phase(phase);
 
-    fork 
-        while (1) begin
-            pack_mdl_in.get(mdl_temp);
-            mdl_queue.push_back(mdl_temp);
-        end
-        while (1) begin
-            pack_mon_in.get(mon_cmp);
-            if(mdl_queue.size() > 0) begin
-                mdl_cmp = mdl_queue.pop_front();
-                result = mon_cmp.compare(mdl_cmp);
-                compare_cnt = compare_cnt + 1;
-                if(result) begin 
-                    success_cnt = success_cnt + 1;
-                    `uvm_info("my_scoreboard", "Compare SUCCESSFULLY", UVM_HIGH);
-                end
-                else begin
-                    failure_cnt = failure_cnt + 1;
-                    `uvm_error("my_scoreboard", "Compare FAILED");
-                    $display("################################################### below is reference model out:");
-                    mdl_cmp.print();
-                    $display("################################################### below is out_agent.monitor out:");
-                    mon_cmp.print();
-                end
-            end
-            else begin
-                `uvm_error("my_scoreboard", "While received from out_agent.monitor, model Queue is empty: ");
-                $display("the unexpected pkt is");
-                mon_cmp.print();
-            end 
-        end
-    join
+//     fork 
+//         while (1) begin
+//             pack_mdl_in.get(mdl_temp);
+//             mdl_queue.push_back(mdl_temp);
+//         end
+//         while (1) begin
+//             pack_mon_in.get(mon_cmp);
+//             if(mdl_queue.size() > 0) begin
+//                 mdl_cmp = mdl_queue.pop_front();
+//                 result = mon_cmp.compare(mdl_cmp);
+//                 compare_cnt = compare_cnt + 1;
+//                 if(result) begin 
+//                     success_cnt = success_cnt + 1;
+//                     `uvm_info("my_scoreboard", "Compare SUCCESSFULLY", UVM_HIGH);
+//                 end
+//                 else begin
+//                     failure_cnt = failure_cnt + 1;
+//                     `uvm_error("my_scoreboard", "Compare FAILED");
+//                     $display("################################################### below is reference model out:");
+//                     mdl_cmp.print();
+//                     $display("################################################### below is out_agent.monitor out:");
+//                     mon_cmp.print();
+//                 end
+//             end
+//             else begin
+//                 `uvm_error("my_scoreboard", "While received from out_agent.monitor, model Queue is empty: ");
+//                 $display("the unexpected pkt is");
+//                 mon_cmp.print();
+//             end 
+//         end
+//     join
 
- endtask
+//  endtask
 `ifndef MCDF_SCOREBOARD_SV
 `define MCDF_SCOREBOARD_SV
 
 class scoreboard_mcdf extends uvm_scoreboard;
     local virtual interface_mcdf mcdf_vif;
-    local virtual interface_arb arb_vif;
+    local virtual interface_arbiter arb_vif;
     local int err_count;
     local int total_count;
     local int chnl_count[3];
     
-    uvm_blocking_get_port #(transaction_fmt) scb_bg_ports[3];
-    uvm_blocking_put_imp #(transaction_fmt, scoreboard_mcdf) fmt_bp_imp;
-    mailbox #(transaction_fmt)  fmt_mb;
+    uvm_blocking_get_port #(transaction_formater) scb_bg_ports[3];
+    uvm_blocking_put_imp #(transaction_formater, scoreboard_mcdf) fmt_bp_imp;
+    mailbox #(transaction_formater)  fmt_mb;
 
     `uvm_component_utils(scoreboard_mcdf)
 	function new(string name = "scoreboard_mcdf", uvm_component parent = null);
@@ -90,14 +90,14 @@ class scoreboard_mcdf extends uvm_scoreboard;
 	    super.build_phase(phase);
         if(!uvm_config_db#(virtual interface_mcdf)::get(this, "", "mcdf_vif", mcdf_vif))
             `uvm_fatal("model_mcdf", "virtual interface must be set for vif!!!");
-        if(!uvm_config_db#(virtual interface_arb)::get(this, "", "arb_vif", arb_vif))
+        if(!uvm_config_db#(virtual interface_arbiter)::get(this, "", "arb_vif", arb_vif))
             `uvm_fatal("model_mcdf", "virtual interface must be set for vif!!!");
         foreach(scb_bg_ports[i]) 
             scb_bg_ports[i] = new($sformatf("scb_bg_ports[%0d]", i), this);
         fmt_bp_imp = new("fmt_bp_imp", this); 
     endfunction
 	
-    task put(transaction_fmt tr);
+    task put(transaction_formater tr);
         fmt_mb.put(tr);
     endtask
 
@@ -121,7 +121,7 @@ task scoreboard_mcdf::run_phase(uvm_phase phase);
 endtask
 
 task scoreboard_mcdf::do_data_compare();
-    transaction_fmt expt, mont;
+    transaction_formater expt, mont;
     bit cmp;
     forever begin
         this.fmt_mb.get(mont);

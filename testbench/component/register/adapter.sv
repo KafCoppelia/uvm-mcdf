@@ -11,7 +11,7 @@ class adapter extends uvm_reg_adapter;
     endfunction
     
     function uvm_sequence_item reg2bus(const ref uvm_reg_bus_op rw);
-        transaction_reg tr;
+        transaction_bus tr;
         tr = new("tr");
         tr.addr = rw.addr;
         tr.cmd = (rw.kind == UVM_READ) ? `WRITE : `READ;
@@ -20,7 +20,7 @@ class adapter extends uvm_reg_adapter;
     endfunction
 
     function void bus2reg(uvm_sequence_item bus_item, ref uvm_reg_bus_op rw);
-        transaction_reg tr;
+        transaction_bus tr;
         if(!$cast(tr, bus_item)) begin
             `uvm_fatal(tID, "Provided bus_item is not of the correct type. Expecting bus_trans action")
             return;

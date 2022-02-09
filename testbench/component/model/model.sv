@@ -24,13 +24,13 @@ class model_mcdf extends uvm_component;
     uvm_blocking_put_imp_chnl0 #(mon_data_t, model_mcdf) chnl0_bp_imp;
     uvm_blocking_put_imp_chnl1 #(mon_data_t, model_mcdf) chnl1_bp_imp;
     uvm_blocking_put_imp_chnl2 #(mon_data_t, model_mcdf) chnl2_bp_imp;
-	uvm_blocking_put_imp #(transaction_reg, model_mcdf) reg_bp_imp;
+	uvm_blocking_put_imp #(transaction_bus, model_mcdf) reg_bp_imp;
 
     // storage the data form 3 channel monitor and reg monitor
     mailbox #(mon_data_t) chnl_mbs[3];
-    mailbox #(transaction_reg) reg_mb;
+    mailbox #(transaction_bus) reg_mb;
 
-	uvm_tlm_fifo #(transaction_fmt) out_tlm_fifos[3];
+	uvm_tlm_fifo #(transaction_formater) out_tlm_fifos[3];
 
 	`uvm_component_utils(model_mcdf);
 	function new(string name = "model_mcdf", uvm_component parent);
@@ -73,7 +73,7 @@ class model_mcdf extends uvm_component;
     task put_chnl2(mon_data_t tr);
         chnl_mbs[2].put(tr);
     endtask
-    task put(transaction_reg tr);
+    task put(transaction_bus tr);
         reg_mb.put(tr);
     endtask
 
@@ -85,7 +85,7 @@ class model_mcdf extends uvm_component;
 endclass
 
 task model_mcdf::do_reg_update();
-    transaction_reg tr;
+    transaction_bus tr;
     forever begin
         this.reg_mb.get(tr);
         if(tr.addr[7:4] == 0 && tr.cmd == `WRITE) begin
@@ -101,7 +101,7 @@ endtask
 
 task model_mcdf::do_packet(int id);
     mon_data_t in_tr;
-    transaction_fmt out_tr;
+    transaction_formater out_tr;
     forever begin
         this.chnl_mbs[id].peek(in_tr);
         out_tr = new("fmt_tr");
