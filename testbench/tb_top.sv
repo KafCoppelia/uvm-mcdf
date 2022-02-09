@@ -44,14 +44,8 @@ module tb_top;
 
     initial begin
         // set the format for time display
-        $timeformat(-9, 2, "ns", 10);      
-        // do interface configuration from tb_top (HW) to verification env (SW)
-        // uvm_config_db # (virtual interface_dut)::set(null, "uvm_test_top.env.in_agt.drv", "vif", input_if);
-        // uvm_config_db # (virtual interface_dut)::set(null, "uvm_test_top.env.in_agt.mon", "vif", input_if);
-        // uvm_config_db # (virtual interface_dut)::set(null, "uvm_test_top.env.out_agt.mon", "vif", output_if);
-        // uvm_config_db # (virtual interface_bus)::set(null, "uvm_test_top.env.bus_agt.drv", "vif", bus_if);
-        // uvm_config_db # (virtual interface_bus)::set(null, "uvm_test_top.env.bus_agt.mon", "vif", bus_if);
-        // uvm_config_db # (virtual interface_backdoor)::set(null, "uvm_test_top", "vif", bk_if);
+        $timeformat(-9, 2, "ns", 10); 
+        // do interface configuration from tb_top (HW) to verification env (SW)     
         uvm_config_db#(virtual interface_channel)::set(uvm_root::get(), "uvm_test_top.env.chnl_agts[0].drv", "vif", chnl0_if);
         uvm_config_db#(virtual interface_channel)::set(uvm_root::get(), "uvm_test_top.env.chnl_agts[1].drv", "vif", chnl1_if);
         uvm_config_db#(virtual interface_channel)::set(uvm_root::get(), "uvm_test_top.env.chnl_agts[2].drv", "vif", chnl2_if);
@@ -63,21 +57,12 @@ module tb_top;
         uvm_config_db#(virtual interface_formater)::set(uvm_root::get(), "uvm_test_top.env.fmt_agt.drv", "vif", fmt_if);
         uvm_config_db#(virtual interface_formater)::set(uvm_root::get(), "uvm_test_top.env.fmt_agt.mon", "vif", fmt_if);
         uvm_config_db#(virtual interface_mcdf)::set(uvm_root::get(), "uvm_test_top.env.mdl", "vif", mcdf_if);
-        uvm_config_db#(virtual interface_mcdf)::set(uvm_root::get(), "uvm_test_top.env.scb", "mcdf_vif", mcdf_if);
-        
+        uvm_config_db#(virtual interface_mcdf)::set(uvm_root::get(), "uvm_test_top.env.scb", "mcdf_vif", mcdf_if);      
         uvm_config_db#(virtual interface_arbiter)::set(uvm_root::get(), "uvm_test_top.env.scb", "arb_vif", arb_if);
-
-
-        
-        #10000;
-        $display("Hell world!");
-        $finish(2);
-    end
-
-    initial begin
+        // start run the test
         run_test();
     end
-    
+
 	// clock generation
     initial begin 
         clk <= 1'b0;

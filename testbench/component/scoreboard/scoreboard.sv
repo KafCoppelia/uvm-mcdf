@@ -78,16 +78,16 @@ class scoreboard_mcdf extends uvm_scoreboard;
     mailbox #(transaction_formater)  fmt_mb;
 
     `uvm_component_utils(scoreboard_mcdf)
-	function new(string name = "scoreboard_mcdf", uvm_component parent = null);
-		super.new(name, parent);
+    function new(string name = "scoreboard_mcdf", uvm_component parent = null);
+        super.new(name, parent);
         this.err_count = 0;
         this.total_count = 0;
         foreach(this.chnl_count[i]) this.chnl_count[i] = 0;
-	    this.fmt_mb = new();
-	endfunction
+        this.fmt_mb = new();
+    endfunction
 
-	function void build_phase(uvm_phase phase);
-	    super.build_phase(phase);
+    function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
         if(!uvm_config_db#(virtual interface_mcdf)::get(this, "", "mcdf_vif", mcdf_vif))
             `uvm_fatal("model_mcdf", "virtual interface must be set for vif!!!");
         if(!uvm_config_db#(virtual interface_arbiter)::get(this, "", "arb_vif", arb_vif))
@@ -96,7 +96,7 @@ class scoreboard_mcdf extends uvm_scoreboard;
             scb_bg_ports[i] = new($sformatf("scb_bg_ports[%0d]", i), this);
         fmt_bp_imp = new("fmt_bp_imp", this); 
     endfunction
-	
+    
     task put(transaction_formater tr);
         fmt_mb.put(tr);
     endtask
@@ -175,21 +175,21 @@ function int scoreboard_mcdf::get_slave_id_with_prio();
 endfunction
 
 function void scoreboard_mcdf::report_phase(uvm_phase phase);
-      string s;
-      super.report_phase(phase);
-      s = "\n---------------------------------------------------------------\n";
-      s = {s, "CHECKER SUMMARY \n"}; 
-      s = {s, $sformatf("total comparison count: %0d \n", this.total_count)}; 
-      foreach(this.chnl_count[i]) s = {s, $sformatf(" channel[%0d] comparison count: %0d \n", i, this.chnl_count[i])};
-      s = {s, $sformatf("total error count: %0d \n", this.err_count)}; 
-      /* foreach(this.chnl_mbs[i]) begin
+        string s;
+        super.report_phase(phase);
+        s = "\n---------------------------------------------------------------\n";
+        s = {s, "CHECKER SUMMARY \n"}; 
+        s = {s, $sformatf("total comparison count: %0d \n", this.total_count)}; 
+        foreach(this.chnl_count[i]) s = {s, $sformatf(" channel[%0d] comparison count: %0d \n", i, this.chnl_count[i])};
+        s = {s, $sformatf("total error count: %0d \n", this.err_count)}; 
+        /* foreach(this.chnl_mbs[i]) begin
         if(this.chnl_mbs[i].num() != 0)
-          s = {s, $sformatf("WARNING:: chnl_mbs[%0d] is not empty! size = %0d \n", i, this.chnl_mbs[i].num())}; 
-      end*/
-      if(this.fmt_mb.num() != 0)
-          s = {s, $sformatf("WARNING:: fmt_mb is not empty! size = %0d \n", this.fmt_mb.num())}; 
-      s = {s, "---------------------------------------------------------------\n"};
-      `uvm_info(get_type_name(), s, UVM_LOW)
+            s = {s, $sformatf("WARNING:: chnl_mbs[%0d] is not empty! size = %0d \n", i, this.chnl_mbs[i].num())}; 
+        end*/
+        if(this.fmt_mb.num() != 0)
+            s = {s, $sformatf("WARNING:: fmt_mb is not empty! size = %0d \n", this.fmt_mb.num())}; 
+        s = {s, "---------------------------------------------------------------\n"};
+        `uvm_info(get_type_name(), s, UVM_LOW)
 endfunction
 /*
     task put_chnl0(mon_data_t t);
