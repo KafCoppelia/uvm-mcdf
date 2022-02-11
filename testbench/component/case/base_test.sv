@@ -44,6 +44,10 @@ function void base_test::connect_phase(uvm_phase phase);
 /*    rm.default_map.set_sequencer(env.bus_agt.sqr, reg_sqr_adapter);
     rm.default_map.set_auto_predict(1);
 */
+    
+    if(get_report_verbosity_level() >= UVM_HIGH ) begin 
+	    uvm_top.print_topology();
+    end
 endfunction
 
 function void base_test::report_phase(uvm_phase phase);
@@ -52,10 +56,6 @@ function void base_test::report_phase(uvm_phase phase);
 	int err_num;
     string test_name;
 	super.report_phase(phase);
-    
-    if(get_report_verbosity_level() >= UVM_HIGH ) begin 
-	    uvm_top.print_topology();
-    end
 
     server = get_report_server();
 	err_num = server.get_severity_count(UVM_ERROR);
