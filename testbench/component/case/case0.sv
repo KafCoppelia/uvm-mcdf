@@ -34,7 +34,7 @@ class case0_vseq extends uvm_sequence;
 			starting_phase.raise_objection(this);
         
         #100;
-        `uvm_info("case0_vseq", "sequence will create", UVM_LOW);
+        `uvm_info("case0_vseq", "sequence will create", UVM_HIGH);
         fork
 		    `uvm_do_on_with(chnl_seq, p_sequencer.chnl_sqrs[0], {ntrans == 20;});
 		    `uvm_do_on(fmt_seq, p_sequencer.fmt_sqr);

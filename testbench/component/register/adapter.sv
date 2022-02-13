@@ -1,11 +1,11 @@
 `ifndef _ADAPTER_SV
 `define _ADAPTER_SV
 
-class adapter extends uvm_reg_adapter;
+class adapter_reg2mcdf extends uvm_reg_adapter;
     string tID = get_type_name();
 
-    `uvm_object_utils(adapter)
-    function new(string name = "adapter");
+    `uvm_object_utils(adapter_reg2mcdf)
+    function new(string name = "adapter_reg2mcdf");
         super.new(name);
         provides_responses = 1;
     endfunction
@@ -14,7 +14,7 @@ class adapter extends uvm_reg_adapter;
         transaction_bus tr;
         tr = new("tr");
         tr.addr = rw.addr;
-        tr.cmd = (rw.kind == UVM_READ) ? `WRITE : `READ;
+        tr.cmd = (rw.kind == UVM_WRITE) ? `WRITE : `READ;
         tr.data = rw.data;
         return tr;
     endfunction

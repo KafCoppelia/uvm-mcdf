@@ -34,9 +34,6 @@ class sequence_channel extends uvm_sequence #(transaction_channel);
 	}
 
 	virtual task body();
-	    
-        `uvm_info("sequence_channel", $sformatf("sequence_channel body will run %d transaction.", ntrans), UVM_LOW); 
-
         repeat(ntrans) begin
         // repeat(5) begin
             transaction_channel m_trans, rsp;
@@ -57,12 +54,10 @@ class sequence_channel extends uvm_sequence #(transaction_channel);
 
     function void post_randomize();
         string s;
-        s = {s, "After randomization \n"};
-        s = {s, "=========================================\n"};
+        s = {s, $sformatf("\nAfter randomization, sequence_channel body will run %0d transaction.\n", ntrans)};
         s = {s, "sequence_channel object content is as below: \n"};
         s = {s, super.sprint()};
-        s = {s, "=========================================\n"};
-        `uvm_info("sequence_channel", s, UVM_HIGH)
+        `uvm_info("sequence_channel", s, UVM_LOW)
     endfunction
 endclass
 

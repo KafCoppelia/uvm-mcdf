@@ -4,7 +4,6 @@
 class monitor_bus extends uvm_monitor;
 	virtual interface_bus vif;
 	
-    uvm_blocking_put_port #(transaction_bus) mon_bp_port;
     uvm_analysis_port #(transaction_bus) mon_ana_port;
 
 	`uvm_component_utils(monitor_bus)
@@ -16,7 +15,6 @@ class monitor_bus extends uvm_monitor;
 		super.build_phase(phase);
 		if(!uvm_config_db#(virtual interface_bus)::get(this, "", "vif", vif))
 			`uvm_fatal("montior_bus", "virtual interface must be set for vif!!!");
-		mon_bp_port = new("mon_bp_port", this);
 		mon_ana_port = new("mon_ana_port", this);
 	endfunction
 
@@ -30,7 +28,6 @@ task monitor_bus::main_phase(uvm_phase phase);
 	while(1) begin
 		tr = new("tr");
 		collect_one_pkt(tr);
-		mon_bp_port.put(tr);
 		mon_ana_port.write(tr);
 	end
 endtask

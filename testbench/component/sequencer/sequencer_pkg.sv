@@ -30,7 +30,7 @@ class virtual_sqr extends uvm_sequencer;
     sequencer_bus reg_sqr;
     sequencer_formater fmt_sqr;
     sequencer_channel chnl_sqrs[3];
-    reg_model p_rm;
+    reg_model_mcdf p_rm;
 
 	`uvm_component_utils(virtual_sqr)
 	function new(string name, uvm_component parent);

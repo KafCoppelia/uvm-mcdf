@@ -8,8 +8,8 @@ class env_mcdf extends uvm_env;
     agent_formater fmt_agt;
 	model_mcdf mdl;
 	scoreboard_mcdf scb;
-    reg_model rm;
-    adapter adapter;
+    reg_model_mcdf rm;
+    adapter_reg2mcdf adapter;
     uvm_reg_predictor #(transaction_bus) predictor;
 
     // coverage_mcdf cvrg;
@@ -32,10 +32,10 @@ class env_mcdf extends uvm_env;
 		mdl = model_mcdf::type_id::create("mdl", this);
 		scb = scoreboard_mcdf::type_id::create("scb", this);
         
-        // rm = reg_model::type_id::create("rm", this);
-        // rm.build();
-        // adapter = adapter::type_id::create("adapter", this);
-        // predictor = uvm_reg_predictor#(transaction_bus)::type_id::create("predictor", this);
+        rm = reg_model_mcdf::type_id::create("rm", this);
+        rm.build();
+        adapter = adapter_reg2mcdf::type_id::create("adapter", this);
+        predictor = uvm_reg_predictor#(transaction_bus)::type_id::create("predictor", this);
              
         // cvrg = coverage_mcdf::type_id::create("cvrg", this);
 	endfunction
@@ -45,13 +45,16 @@ class env_mcdf extends uvm_env;
         chnl_agts[0].mon.mon_bp_port.connect(mdl.chnl0_bp_imp);
         chnl_agts[1].mon.mon_bp_port.connect(mdl.chnl1_bp_imp);
         chnl_agts[2].mon.mon_bp_port.connect(mdl.chnl2_bp_imp);
-        reg_agt.mon.mon_bp_port.connect(mdl.reg_bp_imp);
-        fmt_agt.mon.mon_bp_port.connect(scb.fmt_bp_imp);
-        
+        fmt_agt.mon.mon_bp_port.connect(scb.fmt_bp_imp);   
         foreach(scb.scb_bg_ports[i])
             scb.scb_bg_ports[i].connect(mdl.out_tlm_fifos[i].blocking_get_export);
-        // mdl.p_rm = this.p_rm;
-        // mdl.p_sqr = bus_agt.sqr;
+        
+        rm.default_map.set_sequencer(reg_agt.sqr, adapter);
+        predictor.map = rm.default_map;
+        predictor.adapter = adapter;
+        reg_agt.mon.mon_ana_port.connect(predictor.bus_in);
+
+        mdl.p_rm = this.rm;
 
     endfunction
 
