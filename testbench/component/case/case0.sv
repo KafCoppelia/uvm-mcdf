@@ -1,25 +1,11 @@
 `ifndef _CASE0_SV
 `define _CASE0_SV
 
-/*class case0_sequence extends uvm_sequence #(my_transaction);
-	my_transaction m_trans;
-
-	`uvm_object_utils(case0_sequence)
-	function new(string name = "case0_sequence");
-		super.new(name);
-	endfunction
-
-	virtual task body();
-        repeat(5) begin
-		    // `uvm_info("case0_sequence", "send one transaction to sequencer", UVM_MEDIUM)
-			`uvm_do(m_trans)
-		end
-		#1000;
-	endtask
-endclass */
-
-// -- virtual sequence for case0
+// -- virtual sequence for data channel and formatter
 class case0_vseq extends uvm_sequence;
+	sequence_channel chnl_seq;
+	sequence_formatter fmt_seq;
+
 	`uvm_object_utils(case0_vseq)
     `uvm_declare_p_sequencer(virtual_sqr)
 
@@ -27,19 +13,22 @@ class case0_vseq extends uvm_sequence;
 		super.new(name);
 	endfunction
 	virtual task body();
-        sequence_channel chnl_seq;
-        sequence_formater fmt_seq;
-
 		if(starting_phase != null)
 			starting_phase.raise_objection(this);
         
         #100;
         `uvm_info("case0_vseq", "sequence will create", UVM_HIGH);
         fork
-		    `uvm_do_on_with(chnl_seq, p_sequencer.chnl_sqrs[0], {ntrans == 20;});
-		    `uvm_do_on(fmt_seq, p_sequencer.fmt_sqr);
+			begin
+		    	`uvm_do_on_with(chnl_seq, p_sequencer.chnl_sqrs[0], {ntrans == 40; ch_id==0; data_nidles==0; pkt_nidles==1; data_size==8; });
+                #500;
+				`uvm_do_on_with(chnl_seq, p_sequencer.chnl_sqrs[1], {ntrans == 20; ch_id==1; data_nidles==0; pkt_nidles==2; data_size==16; });
+                #500;
+				`uvm_do_on_with(chnl_seq, p_sequencer.chnl_sqrs[2], {ntrans == 10; ch_id==2; data_nidles==0; pkt_nidles==3; data_size==32; });
+			end
+		    `uvm_do_on_with(fmt_seq, p_sequencer.fmt_sqr, {fifo==ULTRA_FIFO; bandwidth == ULTRA_WIDTH; } );
 		join
-        #500;
+        #5000;
 		if(starting_phase != null)
 			starting_phase.drop_objection(this);
 	endtask
@@ -47,51 +36,10 @@ class case0_vseq extends uvm_sequence;
 	
 endclass 
  
-/*
-class case0_bus_sequence extends uvm_sequence #(my_transaction);
-	transaction_bus m_trans;
-
-	function new(string name = "case0_bus_sequence");
-		super.new(name);
-	endfunction
-
-	virtual task body();
-		if(starting_phase != null)
-			starting_phase.raise_objection(this);
-        
-		`uvm_do_with(m_trans, { m_trans.addr == 16'h9;
-                                m_trans.bus_op == BUS_RD;});
-        `uvm_info("case0_bus_sequencee", $sformatf("invert's initial value is %0h", m_trans.rd_data), UVM_MEDIUM)
-		`uvm_do_with(m_trans, { m_trans.addr == 16'h9;
-                                m_trans.bus_op == BUS_WR;
-                                m_trans.wr_data == 16'h1;});
-		`uvm_do_with(m_trans, { m_trans.addr == 16'h9;
-                                m_trans.bus_op == BUS_RD;});
-        `uvm_info("case0_bus_sequencee", $sformatf("after set, invert's value is %0h", m_trans.rd_data), UVM_MEDIUM)
-		`uvm_do_with(m_trans, { m_trans.addr == 16'h9;
-                                m_trans.bus_op == BUS_WR;
-                                m_trans.wr_data == 16'h0;});
-		`uvm_do_with(m_trans, { m_trans.addr == 16'h9;
-                                m_trans.bus_op == BUS_RD;});
-        `uvm_info("case0_bus_sequencee", $sformatf("after set, invert's value is %0h", m_trans.rd_data), UVM_MEDIUM)
-		`uvm_do_with(m_trans, { m_trans.addr == 16'h9;
-                                m_trans.bus_op == BUS_WR;
-                                m_trans.wr_data == 16'h1;});
-		`uvm_do_with(m_trans, { m_trans.addr == 16'h9;
-                                m_trans.bus_op == BUS_RD;});
-        `uvm_info("case0_bus_sequencee", $sformatf("after set, invert's value is %0h", m_trans.rd_data), UVM_MEDIUM)
-
-		#1000;
-		if(starting_phase != null)
-			starting_phase.drop_objection(this);
-	endtask
-	
-	`uvm_object_utils(case0_bus_sequence)
-	
-endclass 
-
-// -- virtual sequence for case0 register model
+// -- virtual sequence for register
 class case0_cfg_vseq extends uvm_sequence;
+	sequence_bus reg_seq;
+
 	`uvm_object_utils(case0_cfg_vseq)
     `uvm_declare_p_sequencer(virtual_sqr)
 
@@ -99,23 +47,34 @@ class case0_cfg_vseq extends uvm_sequence;
 		super.new(name);
 	endfunction
 	virtual task body();
-        case0_bus_sequence bus_seq;
-
+        uvm_status_e status;
+        uvm_reg_data_t value;
 		if(starting_phase != null)
 			starting_phase.raise_objection(this);
         
-        #1000;
-        
-		`uvm_do_on(bus_seq, p_sequencer.p_bus_sqr)
+        // set all value of control registers via uvm_reg::set()
+		p_sequencer.p_rm.chnl0_ctrl_reg.write(status, {26'h00, 3'd0, 2'b00, 1'b1});
+		p_sequencer.p_rm.chnl1_ctrl_reg.write(status, {26'h00, 3'd1, 2'b00, 1'b1});
+		p_sequencer.p_rm.chnl2_ctrl_reg.write(status, {26'h00, 3'd2, 2'b00, 1'b1});
+
+		// read out the value form register
+		p_sequencer.p_rm.chnl0_ctrl_reg.read(status, value);
+		`uvm_info("case0_cfg_vseq", $sformatf("after set, chnl0_ctrl_reg's value is %0h", value), UVM_HIGH)
+        p_sequencer.p_rm.chnl1_ctrl_reg.read(status, value);
+		`uvm_info("case0_cfg_vseq", $sformatf("after set, chnl1_ctrl_reg's value is %0h", value), UVM_HIGH)
+        p_sequencer.p_rm.chnl2_ctrl_reg.read(status, value);
+		`uvm_info("case0_cfg_vseq", $sformatf("after set, chnl2_ctrl_reg's value is %0h", value), UVM_HIGH)
 		
-        #5000;
+		// send IDLE command
+		`uvm_do_on_with(reg_seq, p_sequencer.reg_sqr, {cmd==`IDLE; } )
+		
+        #500;
 		if(starting_phase != null)
 			starting_phase.drop_objection(this);
 	endtask
 
 endclass 
 
-*/
 
 class case0 extends base_test;
 	`uvm_component_utils(case0)
@@ -127,8 +86,7 @@ class case0 extends base_test;
 	virtual function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
 		
-        /* 1. use default_sequence */
-		// uvm_config_db #(uvm_object_wrapper)::set(this, "v_sqr.configure_phase", "default_sequence", case0_cfg_vseq::type_id::get());
+        uvm_config_db #(uvm_object_wrapper)::set(this, "v_sqr.configure_phase", "default_sequence", case0_cfg_vseq::type_id::get());
 		uvm_config_db #(uvm_object_wrapper)::set(this, "v_sqr.main_phase", "default_sequence", case0_vseq::type_id::get());
 
 	endfunction

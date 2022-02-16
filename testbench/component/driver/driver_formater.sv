@@ -1,13 +1,13 @@
 `ifndef DRIVER_FORMATER_SV
 `define DRIVER_FORMATER_SV
 
-class driver_formater extends uvm_driver #(transaction_formater);
-	local virtual interface_formater vif;
+class driver_formatter extends uvm_driver #(transaction_formatter);
+	local virtual interface_formatter vif;
     local mailbox #(bit[31:0]) fifo;
     local int fifo_bound;
     local int data_consum_peroid;
 
-	`uvm_component_utils(driver_formater)
+	`uvm_component_utils(driver_formatter)
 	function new(string name = "drvier_fmt", uvm_component parent = null);
 		super.new(name, parent);
 	    this.fifo = new();
@@ -19,8 +19,8 @@ class driver_formater extends uvm_driver #(transaction_formater);
 		super.build_phase(phase);
 		// `uvm_info("my_driver", "build_phase is called", UVM_LOW);
 
-		if(!uvm_config_db#(virtual interface_formater)::get(this, "", "vif", vif))
-			`uvm_fatal("driver_formater", "virtual interface must be set for vif!!!");
+		if(!uvm_config_db#(virtual interface_formatter)::get(this, "", "vif", vif))
+			`uvm_fatal("driver_formatter", "virtual interface must be set for vif!!!");
 
 	endfunction
 
@@ -29,10 +29,10 @@ class driver_formater extends uvm_driver #(transaction_formater);
 	extern virtual task do_consume();
 	extern virtual task do_config();
 	extern virtual task do_reset();
-	// extern virtual task drive_one_pkt(transaction_formater tr);
+	// extern virtual task drive_one_pkt(transaction_formatter tr);
 endclass
 
-task driver_formater::run_phase(uvm_phase phase);
+task driver_formatter::run_phase(uvm_phase phase);
     fork 
         this.do_reset();
         this.do_config();
@@ -41,8 +41,8 @@ task driver_formater::run_phase(uvm_phase phase);
     join
 endtask
 
-task driver_formater::do_config();
-    // transaction_formater req, rsp;
+task driver_formatter::do_config();
+    // transaction_formatter req, rsp;
     forever begin
 		seq_item_port.get_next_item(req);
         case(req.fifo)
@@ -66,7 +66,7 @@ task driver_formater::do_config();
 	end
 endtask
 
-task driver_formater::do_receive();
+task driver_formatter::do_receive();
 	forever begin
         @(posedge vif.fmt_req);
 	    forever begin
@@ -89,7 +89,7 @@ task driver_formater::do_receive();
     end
 endtask
 
-task driver_formater::do_consume();
+task driver_formatter::do_consume();
     bit[31:0] data;
     forever begin
         void'(this.fifo.try_get(data));
@@ -98,7 +98,7 @@ task driver_formater::do_consume();
     end
 endtask
 
-task driver_formater::do_reset();
+task driver_formatter::do_reset();
     forever begin
         @(negedge vif.rstn);
         vif.fmt_grant <= 0;

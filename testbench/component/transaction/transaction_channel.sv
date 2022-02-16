@@ -17,7 +17,7 @@ class transaction_channel extends uvm_sequence_item;
         soft ch_id == 0;
         soft pkt_id == 0;
         soft data_nidles inside {[0:2]};
-        soft pkt_nidles inside {[1:10]};
+        pkt_nidles inside {[1:100]};
 	}
 
 	`uvm_object_utils_begin(transaction_channel)

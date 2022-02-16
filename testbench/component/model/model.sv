@@ -15,7 +15,7 @@ class model_mcdf extends uvm_component;
     uvm_blocking_put_imp_chnl0 #(mon_data_t, model_mcdf) chnl0_bp_imp;
     uvm_blocking_put_imp_chnl1 #(mon_data_t, model_mcdf) chnl1_bp_imp;
     uvm_blocking_put_imp_chnl2 #(mon_data_t, model_mcdf) chnl2_bp_imp;
-	uvm_tlm_fifo #(transaction_formater) out_tlm_fifos[3];
+	uvm_tlm_fifo #(transaction_formatter) out_tlm_fifos[3];
 
     // storage the data form 3 channel monitor and reg monitor
     mailbox #(mon_data_t) chnl_mbs[3];
@@ -66,7 +66,7 @@ endclass
 
 task model_mcdf::do_packet(int id);
     mon_data_t in_tr;
-    transaction_formater out_tr;
+    transaction_formatter out_tr;
     forever begin
         this.chnl_mbs[id].peek(in_tr);
         out_tr = new("fmt_tr");

@@ -8,9 +8,9 @@ class scoreboard_mcdf extends uvm_scoreboard;
     local int total_count;
     local int chnl_count[3];
     
-    uvm_blocking_get_port #(transaction_formater) scb_bg_ports[3];
-    uvm_blocking_put_imp #(transaction_formater, scoreboard_mcdf) fmt_bp_imp;
-    mailbox #(transaction_formater)  fmt_mb;
+    uvm_blocking_get_port #(transaction_formatter) scb_bg_ports[3];
+    uvm_blocking_put_imp #(transaction_formatter, scoreboard_mcdf) fmt_bp_imp;
+    mailbox #(transaction_formatter)  fmt_mb;
 
     `uvm_component_utils(scoreboard_mcdf)
     function new(string name = "scoreboard_mcdf", uvm_component parent = null);
@@ -32,7 +32,7 @@ class scoreboard_mcdf extends uvm_scoreboard;
         fmt_bp_imp = new("fmt_bp_imp", this); 
     endfunction
     
-    task put(transaction_formater tr);
+    task put(transaction_formatter tr);
         fmt_mb.put(tr);
     endtask
 
@@ -56,7 +56,7 @@ task scoreboard_mcdf::run_phase(uvm_phase phase);
 endtask
 
 task scoreboard_mcdf::do_data_compare();
-    transaction_formater expt, mont;
+    transaction_formatter expt, mont;
     bit cmp;
     forever begin
         this.fmt_mb.get(mont);

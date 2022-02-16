@@ -41,19 +41,22 @@ task driver_bus::do_reset();
 endtask
    
 task driver_bus::do_drive();
-    @(posedge vif.rstn);
+    transaction_bus req, rsp;
+	@(posedge vif.clk iff (vif.rstn == 1'b1));
     forever begin
         seq_item_port.get_next_item(req);
         drive_one_pkt(req);
-        // rsp.set_sequence_id(req);
+
+        void'($cast(rsp, req.clone()));
         rsp.set_id_info(req);
         rsp.rsp = 1;
+        // rsp.set_sequence_id(req.get_sequence_id());
         seq_item_port.item_done(rsp);
 	end
 endtask
 
 task driver_bus::drive_one_pkt(transaction_bus tr);
-	// `uvm_info("driver_bus", "begin to driver one pkt ", UVM_LOW);
+
 	@(posedge vif.clk iff (vif.rstn == 1'b1));
     
     case(tr.cmd)
@@ -69,7 +72,6 @@ task driver_bus::drive_one_pkt(transaction_bus tr);
             tr.data = vif.cmd_data_r;
         end
         `IDLE: begin
-            @(posedge vif.clk);
             vif.drv_ck.cmd_addr <= 0;
             vif.drv_ck.cmd <= `IDLE;
             vif.drv_ck.cmd_data_w <= 0;

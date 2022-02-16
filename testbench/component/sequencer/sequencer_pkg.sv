@@ -17,10 +17,10 @@ class sequencer_bus extends uvm_sequencer #(transaction_bus);
 	endfunction
 endclass
 
-class sequencer_formater extends uvm_sequencer #(transaction_formater);
+class sequencer_formatter extends uvm_sequencer #(transaction_formatter);
 	
-	`uvm_component_utils(sequencer_formater)
-	function new(string name = "sequencer_formater", uvm_component parent);
+	`uvm_component_utils(sequencer_formatter)
+	function new(string name = "sequencer_formatter", uvm_component parent);
 		super.new(name, parent);
 	endfunction
 	
@@ -28,7 +28,7 @@ endclass
 
 class virtual_sqr extends uvm_sequencer;
     sequencer_bus reg_sqr;
-    sequencer_formater fmt_sqr;
+    sequencer_formatter fmt_sqr;
     sequencer_channel chnl_sqrs[3];
     reg_model_mcdf p_rm;
 

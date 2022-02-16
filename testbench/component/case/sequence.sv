@@ -35,7 +35,6 @@ class sequence_channel extends uvm_sequence #(transaction_channel);
 
 	virtual task body();
         repeat(ntrans) begin
-        // repeat(5) begin
             transaction_channel m_trans, rsp;
 			`uvm_do_with(m_trans, { ch_id == local::ch_id;
                                     pkt_id == local::pkt_id;
@@ -84,10 +83,10 @@ class sequence_bus extends uvm_sequence #(transaction_bus);
                                 cmd == local::cmd;
                                 data == local::data;
                                 })
-        `uvm_info("sequence_bus", m_trans.sprint(), UVM_HIGH)
+        `uvm_info("sequence_bus", $sformatf("m_trans send to driver:\n%s", m_trans.sprint()), UVM_HIGH)
         get_response(rsp);
-        `uvm_info("sequence_bus", rsp.sprint(), UVM_HIGH)
-        if(req.cmd == `READ)
+        `uvm_info("sequence_bus", $sformatf("rsp receive from driver:\n%s", rsp.sprint()), UVM_HIGH)
+        if(m_trans.cmd == `READ)
             this.data = rsp.data;
         assert(rsp.rsp)
             else $error("[RSPERR] %0t error response received!", $time);
@@ -97,15 +96,13 @@ class sequence_bus extends uvm_sequence #(transaction_bus);
     function void post_randomize();
         string s;
         s = {s, "After randomization \n"};
-        s = {s, "=========================================\n"};
         s = {s, "sequence_bus object content is as below: \n"};
         s = {s, super.sprint()};
-        s = {s, "=========================================\n"};
-        `uvm_info("sequence_channel", s, UVM_HIGH)
+        `uvm_info("sequence_bus", s, UVM_LOW)
     endfunction
 endclass
 
-class sequence_formater extends uvm_sequence #(transaction_formater);
+class sequence_formatter extends uvm_sequence #(transaction_formatter);
     rand fmt_fifo_t fifo = MED_FIFO;
     rand fmt_bandwidth_t bandwidth = MED_WIDTH;
     
@@ -114,25 +111,25 @@ class sequence_formater extends uvm_sequence #(transaction_formater);
         soft bandwidth == MED_WIDTH;
     }
     
-    `uvm_object_utils_begin(sequence_formater)
+    `uvm_object_utils_begin(sequence_formatter)
         `uvm_field_enum( fmt_fifo_t, fifo, UVM_ALL_ON )
         `uvm_field_enum( fmt_bandwidth_t, bandwidth, UVM_ALL_ON )
     `uvm_object_utils_end
 
-	function new(string name = "sequence_formater");
+	function new(string name = "sequence_formatter");
 		super.new(name);
 	endfunction
 
-    `uvm_declare_p_sequencer(sequencer_formater)
+    `uvm_declare_p_sequencer(sequencer_formatter)
 
 	virtual task body();
-        transaction_formater m_trans, rsp;
+        transaction_formatter m_trans, rsp;
 		`uvm_do_with(m_trans, { fifo == local::fifo;
                                 bandwidth == local::bandwidth;
                                 })
-        `uvm_info("sequence_formater", m_trans.sprint(), UVM_HIGH)
+        `uvm_info("sequence_formatter", m_trans.sprint(), UVM_HIGH)
         get_response(rsp);
-        `uvm_info("sequence_formater", rsp.sprint(), UVM_HIGH)
+        `uvm_info("sequence_formatter", rsp.sprint(), UVM_HIGH)
         assert(rsp.rsp)
             else $error("[RSPERR] %0t error response received!", $time);
 	endtask
@@ -140,11 +137,9 @@ class sequence_formater extends uvm_sequence #(transaction_formater);
     function void post_randomize();
         string s;
         s = {s, "After randomization \n"};
-        s = {s, "=========================================\n"};
-        s = {s, "sequence_formater object content is as below: \n"};
+        s = {s, "sequence_formatter object content is as below: \n"};
         s = {s, super.sprint()};
-        s = {s, "=========================================\n"};
-        `uvm_info("sequence_channel", s, UVM_HIGH)
+        `uvm_info("sequence_formatter", s, UVM_LOW)
     endfunction
 endclass
 

@@ -2,7 +2,7 @@ Magic 271485
 Revision Verdi_O-2018.09-SP2
 
 ; Window Layout <x> <y> <width> <height> <signalwidth> <valuewidth>
-viewPort 0 27 2358 1040 214 65
+viewPort 0 27 2558 1040 214 65
 
 ; File list:
 ; openDirFile [-d delimiter] [-s time_offset] [-rf auto_bus_rule_file] path_name file_name
@@ -15,17 +15,19 @@ openDirFile -d / "" "/home/william/project/uvm/uvm-mcdf/sim/tb.fsdb"
 signalSpacing 5
 
 ; windowTimeUnit is used for zoom, cursor & marker
+windowTimeUnit 1ns
+
 ; waveform viewport range
-zoom 0.000000 10100000.000000
-cursor 0.000000
-marker 0.000000
+zoom 0.000000 27305.350000 1n
+cursor 126.000000
+marker 825.000000
 
 ; user define markers
 ; userMarker time_pos marker_name color linestyle
 ; visible top row signal index
 top 0
 ; marker line index
-markerPos 24
+markerPos 37
 
 ; event list
 ; addEvent event_name event_expression
@@ -61,20 +63,33 @@ addGroup "channel2"
 addSignal -h 15 /tb_top/dut/ch2_ready_o
 addSignal -h 15 -holdScope ch2_data_i[31:0]
 addSignal -h 15 -holdScope ch2_vld_i
-addGroup "formater"
-addSignal -h 15 /tb_top/dut/fmt_chid_o[1:0]
+addGroup "formatter"
+addSignal -h 15 /tb_top/dut/fmt_req_o
+addSignal -h 15 -holdScope fmt_length_o[5:0]
+addSignal -h 15 -holdScope fmt_chid_o[1:0]
+addSignal -h 15 -holdScope fmt_grant_i
+addSignal -h 15 -holdScope fmt_start_o
 addSignal -h 15 -holdScope fmt_data_o[31:0]
 addSignal -h 15 -holdScope fmt_end_o
-addSignal -h 15 -holdScope fmt_grant_i
-addSignal -h 15 -holdScope fmt_length_o[5:0]
-addSignal -h 15 -holdScope fmt_req_o
-addSignal -h 15 -holdScope fmt_start_o
-addGroup "register"
+addGroup "bus"
 addSignal -h 15 /tb_top/dut/cmd_i[1:0]
 addSignal -h 15 -holdScope cmd_addr_i[7:0]
 addSignal -h 15 -holdScope cmd_data_i[31:0]
 addSignal -h 15 -holdScope cmd_data_o[31:0]
-addGroup "G7"
+addGroup "reg"
+addSignal -h 15 /tb_top/dut/slv0_en_s
+addSignal -h 15 -holdScope slv0_prio_s[1:0]
+addSignal -h 15 -holdScope slv0_pkglen_s[2:0]
+addSignal -h 15 -holdScope slv1_en_s
+addSignal -h 15 -holdScope slv1_prio_s[1:0]
+addSignal -h 15 -holdScope slv1_pkglen_s[2:0]
+addSignal -h 15 -holdScope slv2_en_s
+addSignal -h 15 -holdScope slv2_prio_s[1:0]
+addSignal -h 15 -holdScope slv2_pkglen_s[2:0]
+addSignal -h 15 -holdScope slv0_margin_s[5:0]
+addSignal -h 15 -holdScope slv1_margin_s[5:0]
+addSignal -h 15 -holdScope slv2_margin_s[5:0]
+addGroup "G8"
 
 ; getSignalForm Scope Hierarchy Status
 ; active file of getSignalForm

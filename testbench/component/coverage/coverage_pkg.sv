@@ -7,7 +7,7 @@ class coverage_mcdf extends uvm_component;
     local virtual interface_arbiter arb_vif; 
     local virtual interface_mcdf mcdf_vif;
     local virtual interface_bus reg_vif;
-    local virtual interface_formater fmt_vif;
+    local virtual interface_formatter fmt_vif;
     local int delay_req_to_grant;
 
     `uvm_component_utils(coverage_mcdf)
@@ -202,7 +202,7 @@ class coverage_mcdf extends uvm_component;
         this.do_reg_sample();
         this.do_channel_sample();
         this.do_arbiter_sample();
-        this.do_formater_sample();
+        this.do_formatter_sample();
       join
     endtask
 
@@ -232,7 +232,7 @@ class coverage_mcdf extends uvm_component;
       end
     endtask
 
-    task do_formater_sample();
+    task do_formatter_sample();
       fork
         forever begin
           @(posedge fmt_vif.clk iff fmt_vif.rstn);
@@ -275,7 +275,7 @@ class coverage_mcdf extends uvm_component;
     virtual function void set_interface(virtual interface_channel ch_vifs[3] 
                                         ,virtual interface_bus reg_vif
                                         ,virtual interface_arbiter arb_vif
-                                        ,virtual interface_formater fmt_vif
+                                        ,virtual interface_formatter fmt_vif
                                         ,virtual interface_mcdf mcdf_vif
                                       );
       this.chnl_vifs = ch_vifs;

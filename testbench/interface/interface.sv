@@ -39,7 +39,7 @@ interface interface_bus(input clk, input rstn);
 
 endinterface
 
-interface interface_formater(input clk, input rstn);
+interface interface_formatter(input clk, input rstn);
     logic        fmt_grant;
     logic [1:0]  fmt_chid;
     logic        fmt_req;

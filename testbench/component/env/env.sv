@@ -5,7 +5,7 @@
 class env_mcdf extends uvm_env;
 	agent_channel chnl_agts[3];
 	agent_bus reg_agt;
-    agent_formater fmt_agt;
+    agent_formatter fmt_agt;
 	model_mcdf mdl;
 	scoreboard_mcdf scb;
     reg_model_mcdf rm;
@@ -27,7 +27,7 @@ class env_mcdf extends uvm_env;
         end
 		reg_agt = agent_bus::type_id::create("reg_agt", this);
 		reg_agt.is_active = UVM_ACTIVE;
-        fmt_agt = agent_formater::type_id::create("fmt_agt", this);
+        fmt_agt = agent_formatter::type_id::create("fmt_agt", this);
         fmt_agt.is_active = UVM_ACTIVE;
 		mdl = model_mcdf::type_id::create("mdl", this);
 		scb = scoreboard_mcdf::type_id::create("scb", this);
