@@ -43,13 +43,13 @@ task monitor_formatter::collect_one_pkt(transaction_formatter tr);
         tr.data[i] = vif.mon_ck.fmt_data;
 	end
 	
-    s = $sformatf("==================================================\n");
+    s = $sformatf("\n==================================================\n");
     s = {s, $sformatf("%0t %s moniotred a packet: \n", $time, this.m_name)};
     s = {s, $sformatf("length = %d: \n", tr.length)};
     s = {s, $sformatf("chid = %d: \n", tr.ch_id)};
     foreach(tr.data[i])
         s = {s, $sformatf("data[%0d] = %8x \n", i, tr.data[i])};
-    s = $sformatf("==================================================\n");
+    s = {s, $sformatf("==================================================\n")};	
 	`uvm_info("monitor_formatter", s, UVM_HIGH);
 
 endtask

@@ -15,25 +15,27 @@ class case0_vseq extends uvm_sequence;
 	virtual task body();
 		if(starting_phase != null)
 			starting_phase.raise_objection(this);
-        
         #100;
         `uvm_info("case0_vseq", "sequence will create", UVM_HIGH);
-        fork
+
+		// set the sequence send to formatter, fmt_seq doesn't consume time
+		`uvm_do_on_with(fmt_seq, p_sequencer.fmt_sqr, {fifo==ULTRA_FIFO; bandwidth == ULTRA_WIDTH; } );
+        
+		fork
 			begin
 		    	`uvm_do_on_with(chnl_seq, p_sequencer.chnl_sqrs[0], {ntrans == 40; ch_id==0; data_nidles==0; pkt_nidles==1; data_size==8; });
                 #500;
 				`uvm_do_on_with(chnl_seq, p_sequencer.chnl_sqrs[1], {ntrans == 20; ch_id==1; data_nidles==0; pkt_nidles==2; data_size==16; });
                 #500;
-				`uvm_do_on_with(chnl_seq, p_sequencer.chnl_sqrs[2], {ntrans == 10; ch_id==2; data_nidles==0; pkt_nidles==3; data_size==32; });
+				`uvm_do_on_with(chnl_seq, p_sequencer.chnl_sqrs[2], {ntrans == 10; ch_id==2; data_nidles==0; pkt_nidles==4; data_size==32; });
 			end
-		    `uvm_do_on_with(fmt_seq, p_sequencer.fmt_sqr, {fifo==ULTRA_FIFO; bandwidth == ULTRA_WIDTH; } );
 		join
-        #5000;
+        
+		#5us;   // wait untill all data have been transfered through MCDF        
 		if(starting_phase != null)
 			starting_phase.drop_objection(this);
 	endtask
-	
-	
+
 endclass 
  
 // -- virtual sequence for register
