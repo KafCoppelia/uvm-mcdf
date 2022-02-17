@@ -52,7 +52,8 @@ CASE_NAME = case0
 VERBOSITY ?= UVM_MEDIUM
 SIM_OPT += +UVM_VERBOSITY=$(VERBOSITY)
 # SIM_OPT += +UVM_TESTNAME=$(CASE_NAME) 
-SIM_OPT += +UVM_TIMEOUT="10000000ns,YES"   #watch dog time out 
+SIM_OPT += +UVM_TIMEOUT="10000000ns,YES"   #watch dog time out
+SIM_OPT += +ntb_random_seed_automatic
 #SIM_OPT += +UVM_OBJECTION_TRACE            #debug: trace objection raise or drop
 
 TOOL_CMD += vcs
