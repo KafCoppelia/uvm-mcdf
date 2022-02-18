@@ -272,27 +272,22 @@ class coverage_mcdf extends uvm_component;
       `uvm_info(get_type_name(), s, UVM_LOW)
     endfunction
 
-    virtual function void set_interface(virtual interface_channel ch_vifs[3] 
-                                        ,virtual interface_bus reg_vif
-                                        ,virtual interface_arbiter arb_vif
-                                        ,virtual interface_formatter fmt_vif
-                                        ,virtual interface_mcdf mcdf_vif
-                                      );
-      this.chnl_vifs = ch_vifs;
-      this.arb_vif = arb_vif;
-      this.reg_vif = reg_vif;
-      this.fmt_vif = fmt_vif;
-      this.mcdf_vif = mcdf_vif;
-      if(chnl_vifs[0] == null || chnl_vifs[1] == null || chnl_vifs[2] == null)
-        $error("chnl interface handle is NULL, please check if target interface has been intantiated");
-      if(arb_vif == null)
-        $error("arb interface handle is NULL, please check if target interface has been intantiated");
-      if(reg_vif == null)
-        $error("reg interface handle is NULL, please check if target interface has been intantiated");
-      if(fmt_vif == null)
-        $error("fmt interface handle is NULL, please check if target interface has been intantiated");
-      if(mcdf_vif == null)
-        $error("mcdf interface handle is NULL, please check if target interface has been intantiated");
+    virtual function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        if(!uvm_config_db#(virtual interface_channel)::get(this, "", "ch0_vif", chnl_vifs[0]))
+            `uvm_fatal(get_type_name(), "virtual interface must be set for !!!");
+        if(!uvm_config_db#(virtual interface_channel)::get(this, "", "ch1_vif", chnl_vifs[1]))
+            `uvm_fatal(get_type_name(), "virtual interface must be set for !!!");
+        if(!uvm_config_db#(virtual interface_channel)::get(this, "", "ch2_vif", chnl_vifs[2]))
+            `uvm_fatal(get_type_name(), "virtual interface must be set for !!!");
+        if(!uvm_config_db#(virtual interface_bus)::get(this, "", "reg_vif", reg_vif))
+            `uvm_fatal(get_type_name(), "virtual interface must be set for !!!");
+        if(!uvm_config_db#(virtual interface_formatter)::get(this, "", "fmt_vif", fmt_vif))
+            `uvm_fatal(get_type_name(), "virtual interface must be set for !!!");
+        if(!uvm_config_db#(virtual interface_arbiter)::get(this, "", "arb_vif", arb_vif))
+            `uvm_fatal(get_type_name(), "virtual interface must be set for !!!");
+        if(!uvm_config_db#(virtual interface_mcdf)::get(this, "", "mcdf_vif", mcdf_vif))
+            `uvm_fatal(get_type_name(), "virtual interface must be set for !!!");
     endfunction
 endclass: coverage_mcdf
 

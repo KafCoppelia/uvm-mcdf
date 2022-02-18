@@ -59,6 +59,14 @@ module tb_top;
         uvm_config_db#(virtual interface_mcdf)::set(uvm_root::get(), "uvm_test_top.env.mdl", "vif", mcdf_if);
         uvm_config_db#(virtual interface_mcdf)::set(uvm_root::get(), "uvm_test_top.env.scb", "mcdf_vif", mcdf_if);      
         uvm_config_db#(virtual interface_arbiter)::set(uvm_root::get(), "uvm_test_top.env.scb", "arb_vif", arb_if);
+        // set the interface for coverage
+        uvm_config_db#(virtual interface_channel)::set(uvm_root::get(),     "uvm_test_top.env.cov", "ch0_vif",  chnl0_if);
+        uvm_config_db#(virtual interface_channel)::set(uvm_root::get(),     "uvm_test_top.env.cov", "ch1_vif",  chnl1_if);
+        uvm_config_db#(virtual interface_channel)::set(uvm_root::get(),     "uvm_test_top.env.cov", "ch2_vif",  chnl2_if);
+        uvm_config_db#(virtual interface_bus)::set(uvm_root::get(),         "uvm_test_top.env.cov", "reg_vif",  reg_if);
+        uvm_config_db#(virtual interface_formatter)::set(uvm_root::get(),   "uvm_test_top.env.cov", "fmt_vif",  fmt_if);
+        uvm_config_db#(virtual interface_mcdf)::set(uvm_root::get(),        "uvm_test_top.env.cov", "mcdf_vif", mcdf_if);      
+        uvm_config_db#(virtual interface_arbiter)::set(uvm_root::get(),     "uvm_test_top.env.cov", "arb_vif",  arb_if);
         // start run the test
         run_test();
     end

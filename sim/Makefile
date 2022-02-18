@@ -45,13 +45,17 @@ FSDB_OPT += -lca
 FSDB_OPT += -kdb
 FSDB_ALL += $(FSDB_DEF) $(FSDB_OPT)
 
+#--- COVERAGE ---
+COV_OPT += -cm line+tgl+branch
+# COV_OPT += -cm cond+fsm+line
+
 #-----------------------------------------------------------------------------------------------
 #  sim option 
 #-----------------------------------------------------------------------------------------------
 CASE_NAME = case0
 VERBOSITY ?= UVM_MEDIUM
 SIM_OPT += +UVM_VERBOSITY=$(VERBOSITY)
-# SIM_OPT += +UVM_TESTNAME=$(CASE_NAME) 
+SIM_OPT += +UVM_TESTNAME=$(CASE_NAME) 
 SIM_OPT += +UVM_TIMEOUT="10000000ns,YES"   #watch dog time out
 SIM_OPT += +ntb_random_seed_automatic
 #SIM_OPT += +UVM_OBJECTION_TRACE            #debug: trace objection raise or drop
@@ -62,19 +66,17 @@ ALL    = $(TOOL_CMD) $(PRE_ALL) $(DUT_ALL) $(WRAP_ALL) $(UVM_ALL) $(TB_TOP_ALL) 
 
 
 build_w: rtl.list
-	$(ALL) $(FSDB_ALL) -o usimv
+	$(ALL) $(FSDB_ALL) $(COV_OPT) -o usimv
 
 sim:
-	./usimv $(SIM_OPT) +UVM_TESTNAME=$(CASE_NAME)  -l sim.log
-
-case1:
-	./usimv $(SIM_OPT) +UVM_TESTNAME=case1  -l sim.log
-
-case2:
-	./usimv $(SIM_OPT) +UVM_TESTNAME=case2  -l sim.log
+	./usimv $(SIM_OPT) $(COV_OPT) -l sim.log
 
 verdi:
 	verdi --ssv -ssy -ssf tb.fsdb -simflow -simBin ./usimv
+
+cov:
+	urg -full64 -format both -dir usimv.vdb
+	firefox urgReport/dashboard.html
 
 .PHONY: clean clean_all 
 clean:

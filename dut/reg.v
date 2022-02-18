@@ -105,3 +105,4 @@ module ctrl_regs(
     assign  slv2_en_o = mem[`SLV2_RW_REG][0];
 
 endmodule
+

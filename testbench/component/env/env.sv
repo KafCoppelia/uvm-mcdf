@@ -11,8 +11,7 @@ class env_mcdf extends uvm_env;
     reg_model_mcdf rm;
     adapter_reg2mcdf adapter;
     uvm_reg_predictor #(transaction_bus) predictor;
-
-    // coverage_mcdf cvrg;
+    coverage_mcdf cov;
 
 	`uvm_component_utils(env_mcdf)
 	function new(string name = "env_mcdf", uvm_component parent);
@@ -37,7 +36,7 @@ class env_mcdf extends uvm_env;
         adapter = adapter_reg2mcdf::type_id::create("adapter", this);
         predictor = uvm_reg_predictor#(transaction_bus)::type_id::create("predictor", this);
              
-        // cvrg = coverage_mcdf::type_id::create("cvrg", this);
+        cov = coverage_mcdf::type_id::create("cov", this);
 	endfunction
 
 	virtual function void connect_phase(uvm_phase phase);	
