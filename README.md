@@ -4,7 +4,6 @@
 取自路科验证V2Pro-UVM入门进阶实验lab5源码
 
 #### 软件架构
-软件架构说明
     uvm-mcdf/
     ├── doc
     │   └── uvm_mcdf_env.xlsx
