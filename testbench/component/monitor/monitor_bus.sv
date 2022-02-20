@@ -18,12 +18,12 @@ class monitor_bus extends uvm_monitor;
 		mon_ana_port = new("mon_ana_port", this);
 	endfunction
 
-	extern task main_phase(uvm_phase phase);
+	extern task run_phase(uvm_phase phase);
 	extern task collect_one_pkt(transaction_bus tr);
 
 endclass
 
-task monitor_bus::main_phase(uvm_phase phase);
+task monitor_bus::run_phase(uvm_phase phase);
 	transaction_bus tr;
 	while(1) begin
 		tr = new("tr");
