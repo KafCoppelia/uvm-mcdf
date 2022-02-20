@@ -5,12 +5,67 @@
 
 #### 软件架构
 软件架构说明
+    uvm-mcdf/
+    ├── doc
+    │   └── uvm_mcdf_env.xlsx
+    ├── dut
+    │   ├── arbiter.v
+    │   ├── formater.v
+    │   ├── mcdf.v
+    │   ├── param_def.v
+    │   ├── reg.v
+    │   └── slave_fifo.v
+    ├── sim
+    │   ├── Makefile
+    │   └── rtl.list
+    └── testbench
+        ├── component
+        │   ├── agent
+        │   │   ├── agent_bus.sv
+        │   │   ├── agent_channel.sv
+        │   │   └── agent_formater.sv
+        │   ├── case
+        │   │   ├── base_test.sv
+        │   │   ├── case0.sv
+        │   │   ├── case1.sv
+        │   │   ├── case2.sv
+        │   │   └── sequence.sv
+        │   ├── coverage
+        │   │   └── coverage_pkg.sv
+        │   ├── driver
+        │   │   ├── driver_bus.sv
+        │   │   ├── driver_channel.sv
+        │   │   └── driver_formater.sv
+        │   ├── env
+        │   │   └── env.sv
+        │   ├── model
+        │   │   └── model.sv
+        │   ├── monitor
+        │   │   ├── monitor_bus.sv
+        │   │   ├── monitor_channel.sv
+        │   │   └── monitor_formater.sv
+        │   ├── register
+        │   │   ├── adapter.sv
+        │   │   └── reg_model.sv
+        │   ├── scoreboard
+        │   │   └── scoreboard.sv
+        │   ├── sequencer
+        │   │   └── sequencer_pkg.sv
+        │   └── transaction
+        │       ├── transaction_bus.sv
+        │       ├── transaction_channel.sv
+        │       └── transaction_formater.sv
+        ├── interface
+        │   └── interface.sv
+        └── tb_top.sv
 
 
 #### 安装教程
 
-1.  开发环境搭建参考：[UVM学习之路（1）— CentOS 7虚拟机下安装VCS开发环境](https://blog.csdn.net/qq_38113006/article/details/120803926?spm=1001.2014.3001.5501)
+1.  开发环境搭建参考：[UVM学习之路（1）— CentOS 7虚拟机下安装VCS开发环境](https://blog.csdn.net/qq_38113006/article/details/120803926)
 2.  开发工具使用参考：[UVM学习之路（2）— 使用VCS+Verdi进行仿真调试](https://blog.csdn.net/qq_38113006/article/details/120921003)
+3.  开发环境使用说明：[UVM学习之路（3）— 基于UVM的第一个Hello程序](https://blog.csdn.net/qq_38113006/article/details/120924689)
+4.	本仓库的代码说明：[UVM学习之路（6）— 基于MCDF的验证平台](https://blog.csdn.net/qq_38113006/article/details/122904135)
 
 #### 使用说明
 
