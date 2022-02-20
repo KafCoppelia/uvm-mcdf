@@ -55,9 +55,9 @@ class case0_cfg_vseq extends uvm_sequence;
 			starting_phase.raise_objection(this);
         
         // set all value of control registers via uvm_reg::set()
-		p_sequencer.p_rm.chnl0_ctrl_reg.write(status, {26'h00, 3'd0, 2'b00, 1'b1});
-		p_sequencer.p_rm.chnl1_ctrl_reg.write(status, {26'h00, 3'd1, 2'b00, 1'b1});
-		p_sequencer.p_rm.chnl2_ctrl_reg.write(status, {26'h00, 3'd2, 2'b00, 1'b1});
+		p_sequencer.p_rm.chnl0_ctrl_reg.write(status, {26'h00, 3'd0, 2'b00, 1'b1});		// 32'h01
+		p_sequencer.p_rm.chnl1_ctrl_reg.write(status, {26'h00, 3'd1, 2'b00, 1'b1});		// 32'h09
+		p_sequencer.p_rm.chnl2_ctrl_reg.write(status, {26'h00, 3'd2, 2'b00, 1'b1});		// 32'h11
 
 		// read out the value form register
 		p_sequencer.p_rm.chnl0_ctrl_reg.read(status, value);
