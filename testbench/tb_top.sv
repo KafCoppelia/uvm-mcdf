@@ -42,6 +42,23 @@ module tb_top;
         .fmt_end_o   (fmt_if.fmt_end     )  
     );
 
+ 	// mcdf interface monitoring MCDF ports and signals
+ 	assign mcdf_if.chnl_en[0] = tb.dut.ctrl_regs_inst.slv0_en_o;
+  	assign mcdf_if.chnl_en[1] = tb.dut.ctrl_regs_inst.slv1_en_o;
+  	assign mcdf_if.chnl_en[2] = tb.dut.ctrl_regs_inst.slv2_en_o;
+
+  	// arbiter interface monitoring arbiter ports
+  	assign arb_if.slv_prios[0] = tb.dut.arbiter_inst.slv0_prio_i;
+  	assign arb_if.slv_prios[1] = tb.dut.arbiter_inst.slv1_prio_i;
+  	assign arb_if.slv_prios[2] = tb.dut.arbiter_inst.slv2_prio_i;
+  	assign arb_if.slv_reqs[0] = tb.dut.arbiter_inst.slv0_req_i;
+  	assign arb_if.slv_reqs[1] = tb.dut.arbiter_inst.slv1_req_i;
+  	assign arb_if.slv_reqs[2] = tb.dut.arbiter_inst.slv2_req_i;
+  	assign arb_if.a2s_acks[0] = tb.dut.arbiter_inst.a2s0_ack_o;
+ 	assign arb_if.a2s_acks[1] = tb.dut.arbiter_inst.a2s1_ack_o;
+  	assign arb_if.a2s_acks[2] = tb.dut.arbiter_inst.a2s2_ack_o;
+  	assign arb_if.f2a_id_req = tb.dut.arbiter_inst.f2a_id_req_i;
+
     initial begin
         // set the format for time display
         $timeformat(-9, 2, "ns", 10); 
@@ -57,8 +74,12 @@ module tb_top;
         uvm_config_db#(virtual interface_formatter)::set(uvm_root::get(), "uvm_test_top.env.fmt_agt.drv", "vif", fmt_if);
         uvm_config_db#(virtual interface_formatter)::set(uvm_root::get(), "uvm_test_top.env.fmt_agt.mon", "vif", fmt_if);
         uvm_config_db#(virtual interface_mcdf)::set(uvm_root::get(), "uvm_test_top.env.mdl", "vif", mcdf_if);
-        uvm_config_db#(virtual interface_mcdf)::set(uvm_root::get(), "uvm_test_top.env.scb", "mcdf_vif", mcdf_if);      
-        uvm_config_db#(virtual interface_arbiter)::set(uvm_root::get(), "uvm_test_top.env.scb", "arb_vif", arb_if);
+        // set the interface for scoreboard
+        uvm_config_db#(virtual interface_mcdf)::set(uvm_root::get(), 	"uvm_test_top.env.scb", "mcdf_vif", mcdf_if);      
+        uvm_config_db#(virtual interface_arbiter)::set(uvm_root::get(), "uvm_test_top.env.scb", "arb_vif", 	arb_if);
+        uvm_config_db#(virtual interface_channel)::set(uvm_root::get(), "uvm_test_top.env.scb", "ch0_vif",  chnl0_if);
+        uvm_config_db#(virtual interface_channel)::set(uvm_root::get(),	"uvm_test_top.env.scb", "ch1_vif",  chnl1_if);
+        uvm_config_db#(virtual interface_channel)::set(uvm_root::get(),	"uvm_test_top.env.scb", "ch2_vif",  chnl2_if);
         // set the interface for coverage
         uvm_config_db#(virtual interface_channel)::set(uvm_root::get(),     "uvm_test_top.env.cov", "ch0_vif",  chnl0_if);
         uvm_config_db#(virtual interface_channel)::set(uvm_root::get(),     "uvm_test_top.env.cov", "ch1_vif",  chnl1_if);

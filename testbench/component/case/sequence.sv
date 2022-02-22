@@ -36,11 +36,11 @@ class sequence_channel extends uvm_sequence #(transaction_channel);
 	virtual task body();
         repeat(ntrans) begin
             transaction_channel m_trans, rsp;
-			`uvm_do_with(m_trans, { ch_id == local::ch_id;
-                                    pkt_id == local::pkt_id;
-                                    data_nidles == local::data_nidles;
-                                    pkt_nidles == local::pkt_nidles;
-                                    data.size() == local::data_size;
+			`uvm_do_with(m_trans, { local::ch_id >= 0 -> ch_id == local::ch_id;
+                                    local::pkt_id >= 0 -> pkt_id == local::pkt_id;
+                                    local::data_nidles >= 0 -> data_nidles == local::data_nidles;
+                                    local::pkt_nidles >= 0 -> pkt_nidles == local::pkt_nidles;
+                                    local::data_size >0 -> data.size() == local::data_size;
                                     })
             this.pkt_id++;
             `uvm_info("sequence_channel", {"m_trans: \n", m_trans.sprint()}, UVM_HIGH)

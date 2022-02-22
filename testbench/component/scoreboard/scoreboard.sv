@@ -4,6 +4,7 @@
 class scoreboard_mcdf extends uvm_scoreboard;
     local virtual interface_mcdf mcdf_vif;
     local virtual interface_arbiter arb_vif;
+	local virtual interface_channel chnl_vifs[3];
     local int err_count;
     local int total_count;
     local int chnl_count[3];
@@ -27,6 +28,13 @@ class scoreboard_mcdf extends uvm_scoreboard;
             `uvm_fatal("model_mcdf", "virtual interface must be set for vif!!!");
         if(!uvm_config_db#(virtual interface_arbiter)::get(this, "", "arb_vif", arb_vif))
             `uvm_fatal("model_mcdf", "virtual interface must be set for vif!!!");
+        if(!uvm_config_db#(virtual interface_channel)::get(this, "", "ch0_vif", chnl_vifs[0]))
+            `uvm_fatal(get_type_name(), "virtual interface must be set for !!!");
+        if(!uvm_config_db#(virtual interface_channel)::get(this, "", "ch1_vif", chnl_vifs[1]))
+            `uvm_fatal(get_type_name(), "virtual interface must be set for !!!");
+        if(!uvm_config_db#(virtual interface_channel)::get(this, "", "ch2_vif", chnl_vifs[2]))
+            `uvm_fatal(get_type_name(), "virtual interface must be set for !!!");
+
         foreach(scb_bg_ports[i]) 
             scb_bg_ports[i] = new($sformatf("scb_bg_ports[%0d]", i), this);
         fmt_bp_imp = new("fmt_bp_imp", this); 
@@ -47,11 +55,11 @@ endclass
 
 task scoreboard_mcdf::run_phase(uvm_phase phase);
     fork
+        this.do_data_compare();
         this.do_channel_disable_check(0);
         this.do_channel_disable_check(1);
         this.do_channel_disable_check(2);
         this.do_arbiter_priority_check();
-        this.do_data_compare();
     join
 endtask
 
@@ -76,10 +84,9 @@ endtask
 
 task scoreboard_mcdf::do_channel_disable_check(int id);
     forever begin
-        /* @(posedge this.mcdf_vif.clk iff (this.mcdf_vif.rstn && this.mcdf_vif.mon_ck.chnl_en[id]===0));
+        @(posedge this.mcdf_vif.clk iff (this.mcdf_vif.rstn && this.mcdf_vif.mon_ck.chnl_en[id]===0));
         if(this.chnl_vifs[id].mon_ck.ch_valid===1 && this.chnl_vifs[id].mon_ck.ch_ready===1)
-           `uvm_error("[CHKERR]", "ERROR! when channel disabled, ready signal raised when valid high") 
-    */
+        	`uvm_error("[CHKERR]", "ERROR! when channel disabled, ready signal raised when valid high") 
         #1000;
     end
 endtask
@@ -90,9 +97,9 @@ task scoreboard_mcdf::do_arbiter_priority_check();
         @(posedge this.arb_vif.clk iff (this.arb_vif.rstn && this.arb_vif.mon_ck.f2a_id_req===1));
         id = this.get_slave_id_with_prio();
         if(id >= 0) begin
-          @(posedge this.arb_vif.clk);
-          if(this.arb_vif.mon_ck.a2s_acks[id] !== 1)
-            `uvm_error("[CHKERR]", $sformatf("ERROR! arbiter received f2a_id_req===1 and channel[%0d] raising request with high priority, but is not granted by arbiter", id))
+          	@(posedge this.arb_vif.clk);
+          	if(this.arb_vif.mon_ck.a2s_acks[id] !== 1)
+            	`uvm_error("[CHKERR]", $sformatf("ERROR! arbiter received f2a_id_req===1 and channel[%0d] raising request with high priority, but is not granted by arbiter", id))
         end
       end
 endtask
@@ -127,45 +134,6 @@ function void scoreboard_mcdf::report_phase(uvm_phase phase);
         s = {s, "************************************************************************\n"};
         `uvm_info(get_type_name(), s, UVM_LOW)
 endfunction
-/*
-    task put_chnl0(mon_data_t t);
-      chnl_mbs[0].put(t);
-    endtask
-    task put_chnl1(mon_data_t t);
-      chnl_mbs[1].put(t);
-    endtask
-    task put_chnl2(mon_data_t t);
-      chnl_mbs[2].put(t);
-    endtask
-    task put_fmt(fmt_trans t);
-      fmt_mb.put(t);
-    endtask
-    task put_reg(reg_trans t);
-      reg_mb.put(t);
-    endtask
-    task peek_chnl0(output mon_data_t t);
-      chnl_mbs[0].peek(t);
-    endtask
-    task peek_chnl1(output mon_data_t t);
-      chnl_mbs[1].peek(t);
-    endtask
-    task peek_chnl2(output mon_data_t t);
-      chnl_mbs[2].peek(t);
-    endtask
-    task get_chnl0(output mon_data_t t);
-      chnl_mbs[0].get(t);
-    endtask
-    task get_chnl1(output mon_data_t t);
-      chnl_mbs[1].get(t);
-    endtask
-    task get_chnl2(output mon_data_t t);
-      chnl_mbs[2].get(t);
-    endtask
-    task get_reg(output reg_trans t);
-      reg_mb.get(t);
-    endtask
-*/
-
 
 `endif
  
