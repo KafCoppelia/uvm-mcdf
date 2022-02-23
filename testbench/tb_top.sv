@@ -43,21 +43,21 @@ module tb_top;
     );
 
  	// mcdf interface monitoring MCDF ports and signals
- 	assign mcdf_if.chnl_en[0] = tb.dut.ctrl_regs_inst.slv0_en_o;
-  	assign mcdf_if.chnl_en[1] = tb.dut.ctrl_regs_inst.slv1_en_o;
-  	assign mcdf_if.chnl_en[2] = tb.dut.ctrl_regs_inst.slv2_en_o;
+ 	assign mcdf_if.chnl_en[0] = dut.ctrl_regs_inst.slv0_en_o;
+  	assign mcdf_if.chnl_en[1] = dut.ctrl_regs_inst.slv1_en_o;
+  	assign mcdf_if.chnl_en[2] = dut.ctrl_regs_inst.slv2_en_o;
 
   	// arbiter interface monitoring arbiter ports
-  	assign arb_if.slv_prios[0] = tb.dut.arbiter_inst.slv0_prio_i;
-  	assign arb_if.slv_prios[1] = tb.dut.arbiter_inst.slv1_prio_i;
-  	assign arb_if.slv_prios[2] = tb.dut.arbiter_inst.slv2_prio_i;
-  	assign arb_if.slv_reqs[0] = tb.dut.arbiter_inst.slv0_req_i;
-  	assign arb_if.slv_reqs[1] = tb.dut.arbiter_inst.slv1_req_i;
-  	assign arb_if.slv_reqs[2] = tb.dut.arbiter_inst.slv2_req_i;
-  	assign arb_if.a2s_acks[0] = tb.dut.arbiter_inst.a2s0_ack_o;
- 	assign arb_if.a2s_acks[1] = tb.dut.arbiter_inst.a2s1_ack_o;
-  	assign arb_if.a2s_acks[2] = tb.dut.arbiter_inst.a2s2_ack_o;
-  	assign arb_if.f2a_id_req = tb.dut.arbiter_inst.f2a_id_req_i;
+  	assign arb_if.slv_prios[0] = dut.arbiter_inst.slv0_prio_i;
+  	assign arb_if.slv_prios[1] = dut.arbiter_inst.slv1_prio_i;
+  	assign arb_if.slv_prios[2] = dut.arbiter_inst.slv2_prio_i;
+  	assign arb_if.slv_reqs[0] = dut.arbiter_inst.slv0_req_i;
+  	assign arb_if.slv_reqs[1] = dut.arbiter_inst.slv1_req_i;
+  	assign arb_if.slv_reqs[2] = dut.arbiter_inst.slv2_req_i;
+  	assign arb_if.a2s_acks[0] = dut.arbiter_inst.a2s0_ack_o;
+ 	assign arb_if.a2s_acks[1] = dut.arbiter_inst.a2s1_ack_o;
+  	assign arb_if.a2s_acks[2] = dut.arbiter_inst.a2s2_ack_o;
+  	assign arb_if.f2a_id_req = dut.arbiter_inst.f2a_id_req_i;
 
     initial begin
         // set the format for time display

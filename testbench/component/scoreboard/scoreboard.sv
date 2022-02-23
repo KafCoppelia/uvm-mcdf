@@ -87,7 +87,6 @@ task scoreboard_mcdf::do_channel_disable_check(int id);
         @(posedge this.mcdf_vif.clk iff (this.mcdf_vif.rstn && this.mcdf_vif.mon_ck.chnl_en[id]===0));
         if(this.chnl_vifs[id].mon_ck.ch_valid===1 && this.chnl_vifs[id].mon_ck.ch_ready===1)
         	`uvm_error("[CHKERR]", "ERROR! when channel disabled, ready signal raised when valid high") 
-        #1000;
     end
 endtask
 
