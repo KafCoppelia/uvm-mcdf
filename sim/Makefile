@@ -65,7 +65,7 @@ NORMAL = $(TOOL_CMD) $(PRE_ALL) $(DUT_ALL) $(POST_OPT)
 ALL    = $(TOOL_CMD) $(PRE_ALL) $(DUT_ALL) $(WRAP_ALL) $(UVM_ALL) $(TB_TOP_ALL) $(POST_OPT) 
 
 
-build_w: rtl.list
+build: rtl.list
 	$(ALL) $(FSDB_ALL) $(COV_OPT) -o usimv
 
 sim:
