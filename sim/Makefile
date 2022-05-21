@@ -46,8 +46,11 @@ FSDB_OPT += -kdb
 FSDB_ALL += $(FSDB_DEF) $(FSDB_OPT)
 
 #--- COVERAGE ---
-COV_OPT += -cm line+tgl+branch
-# COV_OPT += -cm cond+fsm+line
+COV=0
+ifeq (1,${COV})
+    COV_OPT += -cm line+tgl+branch+cond+fsm
+    COV_OPT += +define+COV_EN
+endif
 
 #-----------------------------------------------------------------------------------------------
 #  sim option 
@@ -64,8 +67,9 @@ TOOL_CMD += vcs
 NORMAL = $(TOOL_CMD) $(PRE_ALL) $(DUT_ALL) $(POST_OPT) 
 ALL    = $(TOOL_CMD) $(PRE_ALL) $(DUT_ALL) $(WRAP_ALL) $(UVM_ALL) $(TB_TOP_ALL) $(POST_OPT) 
 
+all:comp sim
 
-build: rtl.list
+comp: rtl.list
 	$(ALL) $(FSDB_ALL) $(COV_OPT) -o usimv
 
 sim:
