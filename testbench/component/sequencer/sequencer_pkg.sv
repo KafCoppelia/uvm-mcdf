@@ -1,6 +1,8 @@
 `ifndef _SEQUENCER_PKG_SV
 `define _SEQUENCER_PKG_SV
 
+`include "reg_model.sv"
+
 class sequencer_channel extends uvm_sequencer #(transaction_channel);
 	
 	`uvm_component_utils(sequencer_channel)

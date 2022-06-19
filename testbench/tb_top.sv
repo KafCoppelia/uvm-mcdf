@@ -4,6 +4,10 @@
 import uvm_pkg::*;
 `include "interface.sv"
 
+`include "case0.sv"
+`include "case1.sv"
+`include "case2.sv"
+
 module tb_top;
 
     logic         clk;
@@ -108,12 +112,14 @@ module tb_top;
     end
 
 
-`ifdef DUMP_FSDB
     initial begin 
-        $fsdbDumpfile("tb.fsdb");
-        $fsdbDumpvars(2, tb_top, "+all");
-    end 
-`endif 
-
+        string testname;
+        if($value$plusargs("TESTNAME=%s", testname)) begin
+            $fsdbDumpfile({testname, "_sim_dir/", testname, ".fsdb"});
+        end else begin
+            $fsdbDumpfile("tb.fsdb");
+        end
+        $fsdbDumpvars(0, tb_top);
+    end
 
 endmodule

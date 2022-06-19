@@ -1,95 +1,64 @@
-#-----------------------------------------------------------------------------------------------
-#  compile option 
-#-----------------------------------------------------------------------------------------------
-#--- PRE ---
-PRE_OPT += -full64 
-PRE_OPT += -sverilog
-PRE_OPT += +libext+.sv+.svh   #extend file type; svh for seperate head file and function file after 
-#PRE_OPT += -timescale=1ns/100ps 
-PRE_OPT += -override_timescale=1ns/1ps 
-PRE_OPT += -debug_access+all  #this for ucil mode
-PRE_OPT += +notimingcheck
-PRE_INC += +incdir+../testbench/interface/
-PRE_SRC += 
-PRE_ALL += $(PRE_OPT) $(PRE_INC) $(PRE_SRC) 
+TESTNAME?=case0
 
-#--- DUT --- 
-DUT_SRC += -f ./rtl.list #How to write rtl.list ?
-DUT_INC += +incdir+../dut 
-DUT_ALL += $(DUT_INC) $(DUT_SRC)
-#--- TB_TOP ---
-TB_TOP_INC +=
-# TB_TOP_SRC += ../testbench/tb_top.sv 
-TB_TOP_OPT += 
-TB_TOP_ALL += $(TB_TOP_INC) $(TB_TOP_SRC) $(TB_TOP_OPT)
-#--- DUT_WRAP --
-WRAP_INC += 
-WRAP_SRC += 
-WRAP_ALL += $(WRAP_INC) $(WRAP_SRC) 
-#--- UVM  ---
-UVM_SRC += 
-UVM_INC += +incdir+../testbench/component/transaction/
-UVM_OPT += -ntb_opts uvm-1.1
-UVM_ALL += $(UVM_OPT) $(UVM_INC) $(UVM_SRC) 
-#--- POST ---
-#POST_OPT += -M
-POST_OPT += -Mdir=MLib
-POST_OPT += -Mlib=MLib
-POST_OPT += +radincr
-POST_OPT += -j 16
-#POST_OPT += -o 
-#--- FSDB WAVE --- 
-FSDB_DEF += +define+DUMP_FSDB=1
-# FSDB_OPT += -fsdb
-FSDB_OPT += -lca
-FSDB_OPT += -kdb
-FSDB_ALL += $(FSDB_DEF) $(FSDB_OPT)
-
-#--- COVERAGE ---
-COV=0
-ifeq (1,${COV})
-    COV_OPT += -cm line+tgl+branch+cond+fsm
-    COV_OPT += +define+COV_EN
+COV?=0
+ifeq (${COV},1)
+COV_COMP_OPT= -cm line+cond+fsm+branch+tgl -cm_dir ./coverage/sim_${TESTNAME}.vdb -cm_hier ./cov.cfg +define+COV_EN
+COV_SIM_OPT= -cm line+cond+fsm+branch+tgl -cm_dir ./coverage/sim_${TESTNAME}.vdb -cm_name ${TESTNAME}
+else
+COV_COMP_OPT=
+COV_SIM_OPT=
 endif
 
-#-----------------------------------------------------------------------------------------------
+INC_DIR= +incdir+../testbench/interface/
+INC_DIR+=+incdir+../testbench/component/case
+INC_DIR+=+incdir+../testbench/component/transaction/
+INC_DIR+=+incdir+../testbench/component/sequencer/
+INC_DIR+=+incdir+../testbench/component/driver/
+INC_DIR+=+incdir+../testbench/component/monitor/
+INC_DIR+=+incdir+../testbench/component/agent/
+INC_DIR+=+incdir+../testbench/component/model/
+INC_DIR+=+incdir+../testbench/component/scoreboard/
+INC_DIR+=+incdir+../testbench/component/env/
+INC_DIR+=+incdir+../testbench/component/register/
+INC_DIR+=+incdir+../testbench/component/coverage/
+
 #  sim option 
-#-----------------------------------------------------------------------------------------------
-CASE_NAME = case0
 VERBOSITY ?= UVM_MEDIUM
 SIM_OPT += +UVM_VERBOSITY=$(VERBOSITY)
-SIM_OPT += +UVM_TESTNAME=$(CASE_NAME) 
-SIM_OPT += +UVM_TIMEOUT="10000000ns,YES"   #watch dog time out
+SIM_OPT += +UVM_TIMEOUT="1000000000ns,YES"   #watch dog time out
 SIM_OPT += +ntb_random_seed_automatic
 #SIM_OPT += +UVM_OBJECTION_TRACE            #debug: trace objection raise or drop
 
-TOOL_CMD += vcs
-NORMAL = $(TOOL_CMD) $(PRE_ALL) $(DUT_ALL) $(POST_OPT) 
-ALL    = $(TOOL_CMD) $(PRE_ALL) $(DUT_ALL) $(WRAP_ALL) $(UVM_ALL) $(TB_TOP_ALL) $(POST_OPT) 
-
 all:comp sim
 
-comp: rtl.list
-	$(ALL) $(FSDB_ALL) $(COV_OPT) -o usimv
+comp:
+	[ -d ${TESTNAME}_sim_dir ] || mkdir -m 777 ${TESTNAME}_sim_dir
+	vcs -full64 -sverilog -q -debug_access+all -ntb_opts uvm-1.1 -lca -kdb -timescale=1ns/1ns \
+	+notimingcheck ${COV_COMP_OPT} ${INC_DIR} \
+	-f rtl.list	+define+DUMP_FSDB=1	\
+	-l ${TESTNAME}_sim_dir/vcs_compile.log \
+	-top tb_top ../testbench/tb_top.sv
 
 sim:
-	./usimv $(SIM_OPT) $(COV_OPT) -l sim.log
+	[ -d ${TESTNAME}_sim_dir ] || mkdir ${TESTNAME}_sim_dir
+	./simv ${SIM_OPT} ${COV_SIM_OPT} -l ${TESTNAME}_sim_dir/sim_${TESTNAME}.log \
+	+TESTNAME=${TESTNAME} +UVM_TESTNAME=${TESTNAME}
 
 verdi:
-	verdi --ssv -ssy -ssf tb.fsdb -simflow -simBin ./usimv
+	verdi --ssv -ssy -ssf tb.fsdb -simflow -simBin ./simv &
 
-cov:
-	urg -full64 -format both -dir usimv.vdb
-	firefox urgReport/dashboard.html
+merge.vdb:
+	urg -full64 -format both -dir ./coverage/*.vdb -dbname merge.vdb
 
-.PHONY: clean clean_all 
+cov: merge.vdb
+	firefox urgReport/dashboard.html &
+	verdi -cov -covdir merge.vdb &
+
+.PHONY: clean cleanall
 clean:
-	rm -rf csrc usimv usimv.daidir usimv.vdb ucli.key vc_hdrs.h novas* *fsdb
-	rm -rf verdiLog *.log build_w sim
-	rm -rf result
-	rm -rf .simvision
-clean_all:clean
-	rm -rf core*
-	rm -rf MLib
-	rm -rf merge.vdb
-	rm -rf urgReport
+	rm -rf csrc simv simv.* *.fsdb .__solver_cache__
+	rm -rf novas* ucli.key vc_hdrs.h
+
+cleanall:clean
+	rm -rf coverage merge.vdb urgReport vdCovLog
+	rm -rf verdiLog *.log *_sim_dir

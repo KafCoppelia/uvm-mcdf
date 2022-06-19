@@ -188,13 +188,13 @@ class coverage_mcdf extends uvm_component;
     endgroup
 
     function new (string name = "mcdf_coverage", uvm_component parent);
-      super.new(name, parent);
-      this.cg_mcdf_reg_write_read = new();
-      this.cg_mcdf_reg_illegal_access = new();
-      this.cg_channel_disable = new();
-      this.cg_arbiter_priority = new();
-      this.cg_formatter_length = new();
-      this.cg_formatter_grant = new();
+        super.new(name, parent);
+        this.cg_mcdf_reg_write_read = new();
+        this.cg_mcdf_reg_illegal_access = new();
+        this.cg_channel_disable = new();
+        this.cg_arbiter_priority = new();
+        this.cg_formatter_length = new();
+        this.cg_formatter_grant = new();
     endfunction
 
     task run_phase(uvm_phase phase);

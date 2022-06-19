@@ -1,6 +1,9 @@
 `ifndef AGENT_BUS_SV
 `define AGENT_BUS_SV
 
+`include "driver_bus.sv"
+`include "monitor_bus.sv"
+
 class agent_bus extends uvm_agent;
 	driver_bus drv;
 	monitor_bus mon;

@@ -1,6 +1,11 @@
 `ifndef MY_SEQUENCE_SV_
 `define MY_SEQUENCE_SV_
 
+`include "transaction_channel.sv"
+`include "transaction_formater.sv"
+`include "transaction_bus.sv"
+`include "sequencer_pkg.sv"
+
 class sequence_channel extends uvm_sequence #(transaction_channel);
 	rand int pkt_id = 0;
 	rand int ch_id = -1;

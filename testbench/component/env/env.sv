@@ -1,6 +1,14 @@
 `ifndef MY_ENV_SV
 `define MY_ENV_SV
 
+`include "agent_bus.sv"
+`include "agent_channel.sv"
+`include "agent_formater.sv"
+`include "model.sv"
+`include "scoreboard.sv"
+`include "adapter.sv"
+`include "coverage_pkg.sv"
+
 // top environment for MCDF
 class env_mcdf extends uvm_env;
 	agent_channel chnl_agts[3];
@@ -35,8 +43,9 @@ class env_mcdf extends uvm_env;
         rm.build();
         adapter = adapter_reg2mcdf::type_id::create("adapter", this);
         predictor = uvm_reg_predictor#(transaction_bus)::type_id::create("predictor", this);
-             
+`ifdef COV_EN            
         cov = coverage_mcdf::type_id::create("cov", this);
+`endif
 	endfunction
 
 	virtual function void connect_phase(uvm_phase phase);	

@@ -1,6 +1,9 @@
 `ifndef AGENT_FORMATER_SV
 `define AGENT_FORMATER_SV
 
+`include "driver_formater.sv"
+`include "monitor_formater.sv"
+
 class agent_formatter extends uvm_agent;
 	driver_formatter drv;
 	monitor_formatter mon;

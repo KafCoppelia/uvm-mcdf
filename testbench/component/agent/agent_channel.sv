@@ -1,6 +1,9 @@
 `ifndef AGENT_CHANNEL_SV_
 `define AGENT_CHANNEL_SV_
 
+`include "driver_channel.sv"
+`include "monitor_channel.sv"
+
 class agent_channel extends uvm_agent;
 	driver_channel drv;
 	monitor_channel mon;

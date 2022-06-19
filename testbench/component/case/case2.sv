@@ -69,9 +69,9 @@ class case2_cfg_vseq extends uvm_sequence;
         p_sequencer.p_rm.reset();
 
         //slv0 with len={4,8,16,32},  prio={[0:3]}, en={[0:1]}
-        ch0_wr_val = ($urandom_range(0,3)<<3)+($urandom_range(0,3)<<1)+$urandom_range(0,1);
-        ch1_wr_val = ($urandom_range(0,3)<<3)+($urandom_range(0,3)<<1)+$urandom_range(0,1);
-        ch2_wr_val = ($urandom_range(0,3)<<3)+($urandom_range(0,3)<<1)+$urandom_range(0,1);
+        ch0_wr_val = ($urandom_range(0,1)<<3)+($urandom_range(0,3)<<1)+$urandom_range(1,1);
+        ch1_wr_val = ($urandom_range(0,1)<<3)+($urandom_range(0,3)<<1)+$urandom_range(1,1);
+        ch2_wr_val = ($urandom_range(0,1)<<3)+($urandom_range(0,3)<<1)+$urandom_range(1,1);
 
         //set all value of WR registers via uvm_reg::set() 
         p_sequencer.p_rm.chnl0_ctrl_reg.set(ch0_wr_val);

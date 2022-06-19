@@ -1,6 +1,8 @@
 `ifndef _CASE0_SV
 `define _CASE0_SV
 
+`include "base_test.sv"
+
 // -- virtual sequence for data channel and formatter
 class case0_vseq extends uvm_sequence;
 	sequence_channel chnl_seq;

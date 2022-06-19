@@ -1,0 +1,5 @@
+#! /usr/bin/bash
+
+make $* TESTNAME=case0
+make sim $* TESTNAME=case1
+make sim $* TESTNAME=case2
