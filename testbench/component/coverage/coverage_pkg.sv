@@ -13,7 +13,7 @@ class coverage_mcdf extends uvm_component;
     `uvm_component_utils(coverage_mcdf)
 
     covergroup cg_mcdf_reg_write_read;
-        addr: coverpoint reg_vif.mon_ck.cmd_addr {
+        addr: coverpoint reg_vif.mon_ck.paddr {
             type_option.weight = 0;
             bins slv0_rw_addr = {`SLV0_RW_ADDR};
             bins slv1_rw_addr = {`SLV1_RW_ADDR};
@@ -22,11 +22,10 @@ class coverage_mcdf extends uvm_component;
             bins slv1_r_addr  = {`SLV1_R_ADDR };
             bins slv2_r_addr  = {`SLV2_R_ADDR };
         }
-        cmd: coverpoint reg_vif.mon_ck.cmd {
+        cmd: coverpoint reg_vif.mon_ck.pwrite {
             type_option.weight = 0;
-            bins write = {`WRITE};
-            bins read  = {`READ};
-            bins idle  = {`IDLE};
+            bins write = {1'b1};
+            bins read  = {1'b0};
         }
         cmdXaddr: cross cmd, addr {
             bins slv0_rw_addr = binsof(addr.slv0_rw_addr);
@@ -37,7 +36,6 @@ class coverage_mcdf extends uvm_component;
             bins slv2_r_addr  = binsof(addr.slv2_r_addr );
             bins write        = binsof(cmd.write);
             bins read         = binsof(cmd.read );
-            bins idle         = binsof(cmd.idle );
             bins write_slv0_rw_addr  = binsof(cmd.write) && binsof(addr.slv0_rw_addr);
             bins write_slv1_rw_addr  = binsof(cmd.write) && binsof(addr.slv1_rw_addr);
             bins write_slv2_rw_addr  = binsof(cmd.write) && binsof(addr.slv2_rw_addr);
@@ -51,23 +49,23 @@ class coverage_mcdf extends uvm_component;
     endgroup
 
     covergroup cg_mcdf_reg_illegal_access;
-        addr: coverpoint reg_vif.mon_ck.cmd_addr {
+        addr: coverpoint reg_vif.mon_ck.paddr {
             type_option.weight = 0;
             bins legal_rw = {`SLV0_RW_ADDR, `SLV1_RW_ADDR, `SLV2_RW_ADDR};
             bins legal_r = {`SLV0_R_ADDR, `SLV1_R_ADDR, `SLV2_R_ADDR};
             bins illegal = {[8'h20:$], 8'hC, 8'h1C};
         }
-        cmd: coverpoint reg_vif.mon_ck.cmd {
+        cmd: coverpoint reg_vif.mon_ck.pwrite {
             type_option.weight = 0;
-            bins write = {`WRITE};
-            bins read  = {`READ};
+            bins write = {1'b0};
+            bins read  = {1'b1};
         }
-        wdata: coverpoint reg_vif.mon_ck.cmd_data_w {
+        wdata: coverpoint reg_vif.mon_ck.pwdata {
             type_option.weight = 0;
             bins legal = {[0:'h3F]};
             bins illegal = {['h40:$]};
         }
-        rdata: coverpoint reg_vif.mon_ck.cmd_data_r {
+        rdata: coverpoint reg_vif.mon_ck.prdata {
             type_option.weight = 0;
             bins legal = {[0:'hFF]};
             illegal_bins illegal = default;

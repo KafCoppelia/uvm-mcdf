@@ -21,20 +21,22 @@ endinterface
 
 
 interface interface_bus(input clk, input rstn);
-    logic [1:0]                 cmd;
-    logic [`ADDR_WIDTH-1:0]     cmd_addr;
-    logic [`CMD_DATA_WIDTH-1:0] cmd_data_r;
-    logic [`CMD_DATA_WIDTH-1:0] cmd_data_w;
+    logic                       penable;
+    logic                       psel;
+    logic                       pwrite;
+    logic [`ADDR_WIDTH-1:0]     paddr;
+    logic [`CMD_DATA_WIDTH-1:0] pwdata;
+    logic [`CMD_DATA_WIDTH-1:0] prdata;
     
     clocking drv_ck @(posedge clk);
         default input #1ns output #1ns;
-        output cmd, cmd_addr, cmd_data_w;
-        input cmd_data_r;
+        output psel, penable, pwrite, paddr, pwdata;
+        input prdata;
     endclocking
 
     clocking mon_ck @(posedge clk);
         default input #1ns output #1ns;
-        input cmd, cmd_addr, cmd_data_w, cmd_data_r;
+        input psel, penable, pwrite, paddr, pwdata, prdata;
     endclocking
 
 endinterface
